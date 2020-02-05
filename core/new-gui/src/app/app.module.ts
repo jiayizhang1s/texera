@@ -62,7 +62,7 @@ import { ResourceSectionComponent } from './dashboard/component/feature-containe
 
 import { FileUploadModule } from 'ng2-file-upload';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgbdModalUserAccountLoginComponent } from './dashboard/component/top-bar/user-account-icon/user-account-login/user-account-login/user-account-login.component';
+import { NgbdModalUserAccountLoginComponent } from './dashboard/component/top-bar/user-account-icon/user-account-login/ngbdmodal-user-account-login.component';
 import { UserAccountService } from './dashboard/service/user-account/user-account.service';
 
 @NgModule({

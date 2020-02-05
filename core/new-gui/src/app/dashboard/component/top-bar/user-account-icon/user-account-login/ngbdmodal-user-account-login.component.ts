@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { UserAccountService } from '../../../../../service/user-account/user-account.service';
+import { UserAccountService } from '../../../../service/user-account/user-account.service';
 
 @Component({
-  selector: 'texera-user-account-login',
-  templateUrl: './user-account-login.component.html',
-  styleUrls: ['./user-account-login.component.scss']
+  selector: 'texera-ngbdmodal-user-account-login',
+  templateUrl: './ngbdmodal-user-account-login.component.html',
+  styleUrls: ['./ngbdmodal-user-account-login.component.scss']
 })
 export class NgbdModalUserAccountLoginComponent implements OnInit {
   public loginUserName: string = '';
   public registerUserName: string = '';
+  public selectedTab = 0;
 
 
   constructor(

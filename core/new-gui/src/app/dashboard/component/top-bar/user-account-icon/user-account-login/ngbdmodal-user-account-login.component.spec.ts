@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NgbdModalUserAccountLoginComponent } from './user-account-login.component';
+import { NgbdModalUserAccountLoginComponent } from './ngbdmodal-user-account-login.component';
 
 describe('UserAccountLoginComponent', () => {
   let component: NgbdModalUserAccountLoginComponent;

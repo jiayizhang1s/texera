@@ -21,15 +21,13 @@ export class UserAccountService {
   constructor(private http: HttpClient) { }
 
   public registerUser(userName: string): Observable<UserAccountResponse> {
-    if (this.isLogin()) {
-      throw new Error('Already logged in when register.');
-    }
+    if (this.isLogin()) {throw new Error('Already logged in when register.'); }
+    if (this.checkUserAuthorizationLegal(userName)) {throw new Error(`userName ${userName} is illegal`); }
 
     return this.register(userName).map(
       res => {
         if (res.code === 0) {
-          this.isLoginFlag = true;
-          this.changeUser(res.userAccount);
+          this.changeUser(res.userAccount, res.code);
           return res;
         } else { // register failed
           return res;
@@ -39,15 +37,13 @@ export class UserAccountService {
   }
 
   public loginUser(userName: string):  Observable<UserAccountResponse> {
-    if (this.isLogin()) {
-      throw new Error('Already logged in when login in.');
-    }
+    if (this.isLogin()) {throw new Error('Already logged in when login in.'); }
+    if (this.checkUserAuthorizationLegal(userName)) {throw new Error(`userName ${userName} is illegal`); }
 
     return this.login(userName).map(
       res => {
         if (res.code === 0) {
-          this.isLoginFlag = true;
-          this.changeUser(res.userAccount);
+          this.changeUser(res.userAccount, res.code);
           return res;
         } else { // login in failed
           return res;
@@ -57,17 +53,16 @@ export class UserAccountService {
   }
 
   public logOut(): void {
-    this.isLoginFlag = false;
-    this.changeUser(this.createEmptyUser());
+    this.changeUser(this.createEmptyUser(), 1);
   }
 
   public isLogin(): boolean {
     return this.isLoginFlag;
   }
 
-  public getCurrentUser(): UserAccount {
-    return this.currentUser;
-  }
+  // public getCurrentUser(): UserAccount {
+  //   return this.currentUser;
+  // }
 
   public getCurrentUserField<Field extends keyof UserAccount>(field: Field): UserAccount[Field] {
     return this.currentUser[field];
@@ -98,9 +93,16 @@ export class UserAccountService {
     return emptyUser;
   }
 
-  private changeUser(userAccount: UserAccount): void {
+  private changeUser(userAccount: UserAccount, code: 0 | 1): void {
+    this.isLoginFlag = code === 0;
     this.currentUser = userAccount;
     this.userChangeEvent.emit(this.currentUser);
+  }
+
+  private checkUserAuthorizationLegal(userName: string) {
+    return !this.isLogin() &&
+      userName !== null &&
+      userName.length > 0;
   }
 
 }

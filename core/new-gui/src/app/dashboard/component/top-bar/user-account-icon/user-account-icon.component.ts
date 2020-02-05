@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserAccountService } from '../../../service/user-account/user-account.service';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { NgbdModalUserAccountLoginComponent } from './user-account-login/user-account-login/user-account-login.component';
+import { NgbdModalUserAccountLoginComponent } from './user-account-login/ngbdmodal-user-account-login.component';
 
 /**
  * UserAccountIconComponent is triggered when user wants to log into the system
@@ -43,6 +43,7 @@ export class UserAccountIconComponent implements OnInit {
 
   private openLoginComponent(mode: number): void {
     const modalRef: NgbModalRef = this.modalService.open(NgbdModalUserAccountLoginComponent);
+    modalRef.componentInstance.selectedTab = mode;
   }
 
   private detectUserChange(): void {
@@ -50,7 +51,7 @@ export class UserAccountIconComponent implements OnInit {
       .subscribe(
         () => {
           if (this.userAccountService.isLogin()) {
-            this.userName = this.userAccountService.getCurrentUser().userName;
+            this.userName = this.userAccountService.getCurrentUserField('userName');
           } else {
             this.userName = this.getDefaultUserName();
           }
