@@ -79,19 +79,15 @@ export class UserAccountService {
 
 
   private register(userName: string): Observable<UserAccountResponse> {
-    const params: HttpParams = new HttpParams()
-      .set('userName', userName);
-    return this.http.get<UserAccountResponse>(`${environment.apiUrl}/${registerURL}`,
-      {params}
-    );
+    const formData: FormData = new FormData();
+    formData.append('userName', userName);
+    return this.http.post<UserAccountResponse>(`${environment.apiUrl}/${registerURL}`, formData);
   }
 
   private login(userName: string): Observable<UserAccountResponse> {
-    const params: HttpParams = new HttpParams()
-      .set('userName', userName);
-    return this.http.get<UserAccountResponse>(`${environment.apiUrl}/${loginURL}`,
-      {params}
-    );
+    const formData: FormData = new FormData();
+    formData.append('userName', userName);
+    return this.http.post<UserAccountResponse>(`${environment.apiUrl}/${loginURL}`, formData);
   }
 
   private createEmptyUser(): UserAccount {

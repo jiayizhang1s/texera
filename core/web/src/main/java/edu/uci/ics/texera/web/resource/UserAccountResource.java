@@ -1,13 +1,17 @@
 package edu.uci.ics.texera.web.resource;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Record;
@@ -78,9 +82,10 @@ public class UserAccountResource {
         }
     }
     
-    @GET
+    @POST
     @Path("/login")
-    public UserAccountResponse login(@QueryParam("userName") String userName) {
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public UserAccountResponse login(@FormDataParam("userName") String userName) {
         if (!checkUserNameValid(userName)) {
             return UserAccountResponse.generateErrorResponse("The username " + userName + " is invalid");
         }
@@ -100,9 +105,10 @@ public class UserAccountResource {
     	
     }
     
-    @GET
+    @POST
     @Path("/register")
-    public UserAccountResponse register(@QueryParam("userName") String userName) {
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public UserAccountResponse register(@FormDataParam("userName") String userName) {
         if (!checkUserNameValid(userName)) {
             return UserAccountResponse.generateErrorResponse("The username " + userName + " is invalid");
         }
