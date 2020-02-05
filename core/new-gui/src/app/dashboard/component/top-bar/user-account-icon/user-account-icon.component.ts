@@ -6,9 +6,7 @@ import { NgbdModalUserAccountLoginComponent } from './user-account-login/user-ac
 /**
  * UserAccountIconComponent is triggered when user wants to log into the system
  *
- * //this component is currently unavailable to use//
- *
- * @author Zhaomin Li
+ * @author Adam
  */
 @Component({
   selector: 'texera-user-account-icon',
@@ -24,7 +22,7 @@ export class UserAccountIconComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.subscribeFromUser();
+    this.detectUserChange();
   }
 
   public logOutButton(): void {
@@ -39,36 +37,25 @@ export class UserAccountIconComponent implements OnInit {
     this.openLoginComponent(1);
   }
 
-  public isLogin() {
+  public isLogin(): boolean {
     return this.userAccountService.isLogin();
   }
 
   private openLoginComponent(mode: number): void {
     const modalRef: NgbModalRef = this.modalService.open(NgbdModalUserAccountLoginComponent);
-
-    this.userAccountService.getUserChangeEvent()
-    .subscribe(
-      () => {
-        if (this.userAccountService.isLogin()) {
-          try {
-            modalRef.close();
-          } catch (e) {}
-        }
-      }
-    );
   }
 
-  private subscribeFromUser(): void {
+  private detectUserChange(): void {
     this.userAccountService.getUserChangeEvent()
-    .subscribe(
-      () => {
-        if (this.userAccountService.isLogin()) {
-          this.userName = this.userAccountService.getCurrentUser().userName;
-        } else {
-          this.userName = this.getDefaultUserName();
+      .subscribe(
+        () => {
+          if (this.userAccountService.isLogin()) {
+            this.userName = this.userAccountService.getCurrentUser().userName;
+          } else {
+            this.userName = this.getDefaultUserName();
+          }
         }
-      }
-    );
+      );
 
   }
 

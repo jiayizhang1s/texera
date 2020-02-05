@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
 import { environment } from '../../../../environments/environment';
@@ -28,9 +28,8 @@ export class UserAccountService {
     return this.register(userName).map(
       res => {
         if (res.code === 0) {
-          this.currentUser = res.userAccount;
-          this.userChangeEvent.emit(this.currentUser);
           this.isLoginFlag = true;
+          this.changeUser(res.userAccount);
           return res;
         } else { // register failed
           return res;
@@ -47,9 +46,8 @@ export class UserAccountService {
     return this.login(userName).map(
       res => {
         if (res.code === 0) {
-          this.currentUser = res.userAccount;
-          this.userChangeEvent.emit(this.currentUser);
           this.isLoginFlag = true;
+          this.changeUser(res.userAccount);
           return res;
         } else { // login in failed
           return res;
@@ -60,8 +58,7 @@ export class UserAccountService {
 
   public logOut(): void {
     this.isLoginFlag = false;
-    this.currentUser = this.createEmptyUser();
-    this.userChangeEvent.emit(this.currentUser);
+    this.changeUser(this.createEmptyUser());
   }
 
   public isLogin(): boolean {
@@ -72,20 +69,28 @@ export class UserAccountService {
     return this.currentUser;
   }
 
+  public getCurrentUserField<Field extends keyof UserAccount>(field: Field): UserAccount[Field] {
+    return this.currentUser[field];
+  }
+
   public getUserChangeEvent(): EventEmitter<UserAccount> {
     return this.userChangeEvent;
   }
 
 
   private register(userName: string): Observable<UserAccountResponse> {
-    return this.http.put<UserAccountResponse>(`${environment.apiUrl}/${registerURL}`,
-      {userName}
+    const params: HttpParams = new HttpParams()
+      .set('userName', userName);
+    return this.http.get<UserAccountResponse>(`${environment.apiUrl}/${registerURL}`,
+      {params}
     );
   }
 
   private login(userName: string): Observable<UserAccountResponse> {
+    const params: HttpParams = new HttpParams()
+      .set('userName', userName);
     return this.http.get<UserAccountResponse>(`${environment.apiUrl}/${loginURL}`,
-      {params : {name : userName}}
+      {params}
     );
   }
 
@@ -95,6 +100,11 @@ export class UserAccountService {
       userID : -1
     };
     return emptyUser;
+  }
+
+  private changeUser(userAccount: UserAccount): void {
+    this.currentUser = userAccount;
+    this.userChangeEvent.emit(this.currentUser);
   }
 
 }

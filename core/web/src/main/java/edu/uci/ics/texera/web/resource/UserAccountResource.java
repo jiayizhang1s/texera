@@ -5,6 +5,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.jooq.Condition;
@@ -34,7 +35,7 @@ import java.util.List;
 public class UserAccountResource {
     private final static String serverName = "root";
     private final static String password = "PassWithWord";
-    private final static String url = "jdbc:mysql://localhost:3306/texera";
+    private final static String url = "jdbc:mysql://localhost:3306/texera?serverTimezone=UTC";
     
     
     /**
@@ -79,65 +80,82 @@ public class UserAccountResource {
     
     @GET
     @Path("/login")
-    public UserAccountResponse login(String userName) {
+    public UserAccountResponse login(@QueryParam("userName") String userName) {
+        if (!checkUserNameValid(userName)) {
+            return UserAccountResponse.generateErrorResponse("The username " + userName + " is invalid");
+        }
 
         Condition loginCondition = USERACCOUNT.USERNAME.equal(userName); // TODO compare password
-        Result<Record1<Integer>> result = getUserID(loginCondition);
+        Record1<Integer> result = getUserID(loginCondition);
     	
-    	if (result.size() == 0) { // not found
+    	if (result == null) { // not found
     	    return UserAccountResponse.generateErrorResponse("The username or password is incorrect");
     	} else {
     	    UserAccount account = new UserAccount(
-    				result.get(0).get(USERACCOUNT.USERNAME),
-    				result.get(0).get(USERACCOUNT.USERID));
+    				userName,
+    				result.get(USERACCOUNT.USERID));
     	    UserAccountResponse response = UserAccountResponse.generateSuccessResponse(account);
     		return response;
     	}
     	
     }
     
-    @PUT
+    @GET
     @Path("/register")
-    public UserAccountResponse register(String userName) {
-    
-        Condition registerCondition = USERACCOUNT.USERNAME.equal(userName);
-        Result<Record1<Integer>> result = getUserID(registerCondition);
+    public UserAccountResponse register(@QueryParam("userName") String userName) {
+        if (!checkUserNameValid(userName)) {
+            return UserAccountResponse.generateErrorResponse("The username " + userName + " is invalid");
+        }
         
-        if (result.size() == 0) { // not found and register is allowed
-            return insertUserAccount(userName);
+        Condition registerCondition = USERACCOUNT.USERNAME.equal(userName);
+        Record1<Integer> result = getUserID(registerCondition);
+        
+        if (result == null) { // not found and register is allowed
+            UseraccountRecord returnID = insertUserAccount(userName);
+            UserAccount account = new UserAccount(
+                    userName,
+                    returnID.get(USERACCOUNT.USERID));
+            UserAccountResponse response = UserAccountResponse.generateSuccessResponse(account);
+            return response;
         } else {
             return UserAccountResponse.generateErrorResponse("Username already exists");
         }
     }
     
-    private Result<Record1<Integer>> getUserID(Condition condition) {
+    private Record1<Integer> getUserID(Condition condition) {
         try (Connection conn = DriverManager.getConnection(url, serverName, password)) {
             DSLContext create = DSL.using(conn, SQLDialect.MYSQL);
-            Result<Record1<Integer>> result = create
+            Record1<Integer> result = create
                     .select(USERACCOUNT.USERID)
                     .from(USERACCOUNT)
                     .where(condition)
-                    .limit(1)
-                    .fetch();
+                    .fetchOne();
             return result;
         } catch (Exception e) {
             throw new TexeraWebException(e);
         }
     }
     
-    private UserAccountResponse insertUserAccount(String userName) {
+    private UseraccountRecord insertUserAccount(String userName) {
         try (Connection conn = DriverManager.getConnection(url, serverName, password)) {
             DSLContext create = DSL.using(conn, SQLDialect.MYSQL);
             
-            create.insertInto(USERACCOUNT,
-                    USERACCOUNT.USERNAME)
-                    .values(userName)
-                    .execute();
+            UseraccountRecord result = create.insertInto(USERACCOUNT)
+                    .set(USERACCOUNT.USERNAME, userName)
+                    .set(USERACCOUNT.USERID, defaultValue(USERACCOUNT.USERID))
+                    .returning(USERACCOUNT.USERID)
+                    .fetchOne();
+            
+            return result;
             
         } catch (Exception e) {
             throw new TexeraWebException(e);
         }
-        return login(userName);
+    }
+    
+    private boolean checkUserNameValid(String userName) {
+        return userName != null && 
+                userName.length() > 0;
     }
     
 }

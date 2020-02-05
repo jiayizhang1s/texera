@@ -17,6 +17,7 @@ export class NgbdModalUserAccountLoginComponent implements OnInit {
     private userAccountService: UserAccountService) { }
 
   ngOnInit() {
+    this.detectUserChange();
   }
 
   public login(): void {
@@ -42,7 +43,7 @@ export class NgbdModalUserAccountLoginComponent implements OnInit {
       return;
     }
 
-    this.userAccountService.registerUser(this.loginUserName)
+    this.userAccountService.registerUser(this.registerUserName)
       .subscribe(
         res => {
           if (res.code === 0) { // successfully register
@@ -50,6 +51,17 @@ export class NgbdModalUserAccountLoginComponent implements OnInit {
           } else { // register error
             // TODO
             console.log(res.message);
+          }
+        }
+      );
+  }
+
+  private detectUserChange(): void {
+    this.userAccountService.getUserChangeEvent()
+      .subscribe(
+        () => {
+          if (this.userAccountService.isLogin()) {
+            this.activeModal.close();
           }
         }
       );
