@@ -33,7 +33,7 @@ export class UserAccountService {
   public registerUser(userName: string): Observable<UserAccountResponse> {
     // assume the text passed in should be correct
     if (this.isLogin()) {throw new Error('Already logged in when register.'); }
-    if (this.checkUserAuthorizationLegal(userName)) {throw new Error(`userName ${userName} is illegal`); }
+    if (!this.checkUserAuthorizationLegal(userName)) {throw new Error(`userName ${userName} is illegal`); }
 
     return this.register(userName).map(
       res => {
@@ -54,7 +54,7 @@ export class UserAccountService {
    */
   public loginUser(userName: string):  Observable<UserAccountResponse> {
     if (this.isLogin()) {throw new Error('Already logged in when login in.'); }
-    if (this.checkUserAuthorizationLegal(userName)) {throw new Error(`userName ${userName} is illegal`); }
+    if (!this.checkUserAuthorizationLegal(userName)) {throw new Error(`userName ${userName} is illegal`); }
 
     return this.login(userName).map(
       res => {
