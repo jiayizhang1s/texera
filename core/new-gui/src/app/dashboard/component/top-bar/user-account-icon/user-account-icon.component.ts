@@ -4,7 +4,9 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { NgbdModalUserAccountLoginComponent } from './user-account-login/ngbdmodal-user-account-login.component';
 
 /**
- * UserAccountIconComponent is triggered when user wants to log into the system
+ * UserAccountIconComponent is used to control user system on the top right corner
+ * It includes the button for login/registration/logout
+ * It also includes what is shown on the top right
  *
  * @author Adam
  */
@@ -25,27 +27,47 @@ export class UserAccountIconComponent implements OnInit {
     this.detectUserChange();
   }
 
+  /**
+   * handle the event when user click on the logout button
+   */
   public logOutButton(): void {
     this.userAccountService.logOut();
   }
 
+  /**
+   * handle the event when user click on the login (sign in) button
+   */
   public loginButton(): void {
     this.openLoginComponent(0);
   }
 
+  /**
+   * handle the event when user click on the register (sign up) button
+   */
   public registerButton(): void {
     this.openLoginComponent(1);
   }
 
+  /**
+   * return true if the user is already login
+   */
   public isLogin(): boolean {
     return this.userAccountService.isLogin();
   }
 
-  private openLoginComponent(mode: number): void {
+  /**
+   * This method will open the login/register pop up
+   * It will switch to the tab based on the mode numer given
+   * @param mode 0 indicates login and 1 indicates registration
+   */
+  private openLoginComponent(mode: 0 | 1): void {
     const modalRef: NgbModalRef = this.modalService.open(NgbdModalUserAccountLoginComponent);
     modalRef.componentInstance.selectedTab = mode;
   }
 
+  /**
+   * this method will change the user name on screen when receive userChangeEvent
+   */
   private detectUserChange(): void {
     this.userAccountService.getUserChangeEvent()
       .subscribe(
@@ -60,6 +82,9 @@ export class UserAccountIconComponent implements OnInit {
 
   }
 
+  /**
+   * this method will return the default name show on screen
+   */
   private getDefaultUserName(): string {
     return 'User';
   }

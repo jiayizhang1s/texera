@@ -37,9 +37,9 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class UserAccountResource {
-    private final static String serverName = "root";
-    private final static String password = "PassWithWord";
-    private final static String url = "jdbc:mysql://localhost:3306/texera?serverTimezone=UTC";
+    private final static String serverName = TexeraMysqlServerInfo.getServername();
+    private final static String password = TexeraMysqlServerInfo.getPassword();
+    private final static String url = TexeraMysqlServerInfo.getUrl();
     
     
     /**
@@ -86,37 +86,37 @@ public class UserAccountResource {
     @Path("/login")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public UserAccountResponse login(@FormDataParam("userName") String userName) {
-        if (!checkUserNameValid(userName)) {
-            return UserAccountResponse.generateErrorResponse("The username " + userName + " is invalid");
+        if (!checkUserInfoValid(userName)) {
+            return UserAccountResponse.generateErrorResponse("The username or password is incorrect");
         }
 
         Condition loginCondition = USERACCOUNT.USERNAME.equal(userName); // TODO compare password
         Record1<Integer> result = getUserID(loginCondition);
-    	
-    	if (result == null) { // not found
-    	    return UserAccountResponse.generateErrorResponse("The username or password is incorrect");
-    	} else {
-    	    UserAccount account = new UserAccount(
-    				userName,
-    				result.get(USERACCOUNT.USERID));
-    	    UserAccountResponse response = UserAccountResponse.generateSuccessResponse(account);
-    		return response;
-    	}
-    	
+
+        if (result == null) { // not found
+            return UserAccountResponse.generateErrorResponse("The username or password is incorrect");
+        } else {
+            UserAccount account = new UserAccount(
+                        userName,
+                        result.get(USERACCOUNT.USERID));
+            UserAccountResponse response = UserAccountResponse.generateSuccessResponse(account);
+            return response;
+        }
+
     }
     
     @POST
     @Path("/register")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public UserAccountResponse register(@FormDataParam("userName") String userName) {
-        if (!checkUserNameValid(userName)) {
-            return UserAccountResponse.generateErrorResponse("The username " + userName + " is invalid");
+        if (!checkUserInfoValid(userName)) {
+            return UserAccountResponse.generateErrorResponse("The username or password is incorrect");
         }
         
         Condition registerCondition = USERACCOUNT.USERNAME.equal(userName);
         Record1<Integer> result = getUserID(registerCondition);
         
-        if (result == null) { // not found and register is allowed
+        if (result == null) { // not found and register is allowed, potential problem for concurrency
             UseraccountRecord returnID = insertUserAccount(userName);
             UserAccount account = new UserAccount(
                     userName,
@@ -159,7 +159,7 @@ public class UserAccountResource {
         }
     }
     
-    private boolean checkUserNameValid(String userName) {
+    private boolean checkUserInfoValid(String userName) {
         return userName != null && 
                 userName.length() > 0;
     }
