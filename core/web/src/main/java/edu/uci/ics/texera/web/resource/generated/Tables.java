@@ -4,8 +4,6 @@
 package edu.uci.ics.texera.web.resource.generated;
 
 
-import edu.uci.ics.texera.web.resource.generated.tables.Dictownship;
-import edu.uci.ics.texera.web.resource.generated.tables.Fileownship;
 import edu.uci.ics.texera.web.resource.generated.tables.Useraccount;
 import edu.uci.ics.texera.web.resource.generated.tables.Userdict;
 import edu.uci.ics.texera.web.resource.generated.tables.Userfile;
@@ -25,16 +23,6 @@ import javax.annotation.processing.Generated;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
-
-    /**
-     * The table <code>texera.dictownship</code>.
-     */
-    public static final Dictownship DICTOWNSHIP = Dictownship.DICTOWNSHIP;
-
-    /**
-     * The table <code>texera.fileownship</code>.
-     */
-    public static final Fileownship FILEOWNSHIP = Fileownship.FILEOWNSHIP;
 
     /**
      * The table <code>texera.useraccount</code>.

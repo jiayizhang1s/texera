@@ -4,8 +4,6 @@
 package edu.uci.ics.texera.web.resource.generated;
 
 
-import edu.uci.ics.texera.web.resource.generated.tables.Dictownship;
-import edu.uci.ics.texera.web.resource.generated.tables.Fileownship;
 import edu.uci.ics.texera.web.resource.generated.tables.Useraccount;
 import edu.uci.ics.texera.web.resource.generated.tables.Userdict;
 import edu.uci.ics.texera.web.resource.generated.tables.Userfile;
@@ -34,22 +32,12 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Texera extends SchemaImpl {
 
-    private static final long serialVersionUID = 1244513812;
+    private static final long serialVersionUID = 189362662;
 
     /**
      * The reference instance of <code>texera</code>
      */
     public static final Texera TEXERA = new Texera();
-
-    /**
-     * The table <code>texera.dictownship</code>.
-     */
-    public final Dictownship DICTOWNSHIP = edu.uci.ics.texera.web.resource.generated.tables.Dictownship.DICTOWNSHIP;
-
-    /**
-     * The table <code>texera.fileownship</code>.
-     */
-    public final Fileownship FILEOWNSHIP = edu.uci.ics.texera.web.resource.generated.tables.Fileownship.FILEOWNSHIP;
 
     /**
      * The table <code>texera.useraccount</code>.
@@ -88,8 +76,6 @@ public class Texera extends SchemaImpl {
 
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
-            Dictownship.DICTOWNSHIP,
-            Fileownship.FILEOWNSHIP,
             Useraccount.USERACCOUNT,
             Userdict.USERDICT,
             Userfile.USERFILE);

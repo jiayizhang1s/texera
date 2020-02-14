@@ -20,7 +20,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row3;
+import org.jooq.Row4;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Userdict extends TableImpl<UserdictRecord> {
 
-    private static final long serialVersionUID = -983192478;
+    private static final long serialVersionUID = 459799730;
 
     /**
      * The reference instance of <code>texera.userdict</code>
@@ -58,9 +58,14 @@ public class Userdict extends TableImpl<UserdictRecord> {
     }
 
     /**
+     * The column <code>texera.userdict.userID</code>.
+     */
+    public final TableField<UserdictRecord, Double> USERID = createField(DSL.name("userID"), org.jooq.impl.SQLDataType.DOUBLE.nullable(false), this, "");
+
+    /**
      * The column <code>texera.userdict.dictID</code>.
      */
-    public final TableField<UserdictRecord, Integer> DICTID = createField(DSL.name("dictID"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+    public final TableField<UserdictRecord, Double> DICTID = createField(DSL.name("dictID"), org.jooq.impl.SQLDataType.DOUBLE.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>texera.userdict.dictName</code>.
@@ -70,7 +75,7 @@ public class Userdict extends TableImpl<UserdictRecord> {
     /**
      * The column <code>texera.userdict.dictContent</code>.
      */
-    public final TableField<UserdictRecord, byte[]> DICTCONTENT = createField(DSL.name("dictContent"), org.jooq.impl.SQLDataType.BLOB.nullable(false), this, "");
+    public final TableField<UserdictRecord, String> DICTCONTENT = createField(DSL.name("dictContent"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * Create a <code>texera.userdict</code> table reference
@@ -112,11 +117,11 @@ public class Userdict extends TableImpl<UserdictRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.USERDICT_DICTID, Indexes.USERDICT_PRIMARY);
+        return Arrays.<Index>asList(Indexes.USERDICT_PRIMARY, Indexes.USERDICT_USERID);
     }
 
     @Override
-    public Identity<UserdictRecord, Integer> getIdentity() {
+    public Identity<UserdictRecord, Double> getIdentity() {
         return Keys.IDENTITY_USERDICT;
     }
 
@@ -128,6 +133,15 @@ public class Userdict extends TableImpl<UserdictRecord> {
     @Override
     public List<UniqueKey<UserdictRecord>> getKeys() {
         return Arrays.<UniqueKey<UserdictRecord>>asList(Keys.KEY_USERDICT_PRIMARY);
+    }
+
+    @Override
+    public List<ForeignKey<UserdictRecord, ?>> getReferences() {
+        return Arrays.<ForeignKey<UserdictRecord, ?>>asList(Keys.USERDICT_IBFK_1);
+    }
+
+    public Useraccount useraccount() {
+        return new Useraccount(this, Keys.USERDICT_IBFK_1);
     }
 
     @Override
@@ -157,11 +171,11 @@ public class Userdict extends TableImpl<UserdictRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row3 type methods
+    // Row4 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row3<Integer, String, byte[]> fieldsRow() {
-        return (Row3) super.fieldsRow();
+    public Row4<Double, Double, String, String> fieldsRow() {
+        return (Row4) super.fieldsRow();
     }
 }

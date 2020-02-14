@@ -20,7 +20,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row3;
+import org.jooq.Row4;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Userfile extends TableImpl<UserfileRecord> {
 
-    private static final long serialVersionUID = -495236099;
+    private static final long serialVersionUID = 789402843;
 
     /**
      * The reference instance of <code>texera.userfile</code>
@@ -58,9 +58,14 @@ public class Userfile extends TableImpl<UserfileRecord> {
     }
 
     /**
+     * The column <code>texera.userfile.userID</code>.
+     */
+    public final TableField<UserfileRecord, Double> USERID = createField(DSL.name("userID"), org.jooq.impl.SQLDataType.DOUBLE.nullable(false), this, "");
+
+    /**
      * The column <code>texera.userfile.fileID</code>.
      */
-    public final TableField<UserfileRecord, Integer> FILEID = createField(DSL.name("fileID"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+    public final TableField<UserfileRecord, Double> FILEID = createField(DSL.name("fileID"), org.jooq.impl.SQLDataType.DOUBLE.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>texera.userfile.fileName</code>.
@@ -70,7 +75,7 @@ public class Userfile extends TableImpl<UserfileRecord> {
     /**
      * The column <code>texera.userfile.filePath</code>.
      */
-    public final TableField<UserfileRecord, String> FILEPATH = createField(DSL.name("filePath"), org.jooq.impl.SQLDataType.VARCHAR(64).nullable(false), this, "");
+    public final TableField<UserfileRecord, String> FILEPATH = createField(DSL.name("filePath"), org.jooq.impl.SQLDataType.VARCHAR(128).nullable(false), this, "");
 
     /**
      * Create a <code>texera.userfile</code> table reference
@@ -112,11 +117,11 @@ public class Userfile extends TableImpl<UserfileRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.USERFILE_FILEID, Indexes.USERFILE_PRIMARY);
+        return Arrays.<Index>asList(Indexes.USERFILE_PRIMARY, Indexes.USERFILE_USERID);
     }
 
     @Override
-    public Identity<UserfileRecord, Integer> getIdentity() {
+    public Identity<UserfileRecord, Double> getIdentity() {
         return Keys.IDENTITY_USERFILE;
     }
 
@@ -128,6 +133,15 @@ public class Userfile extends TableImpl<UserfileRecord> {
     @Override
     public List<UniqueKey<UserfileRecord>> getKeys() {
         return Arrays.<UniqueKey<UserfileRecord>>asList(Keys.KEY_USERFILE_PRIMARY);
+    }
+
+    @Override
+    public List<ForeignKey<UserfileRecord, ?>> getReferences() {
+        return Arrays.<ForeignKey<UserfileRecord, ?>>asList(Keys.USERFILE_IBFK_1);
+    }
+
+    public Useraccount useraccount() {
+        return new Useraccount(this, Keys.USERFILE_IBFK_1);
     }
 
     @Override
@@ -157,11 +171,11 @@ public class Userfile extends TableImpl<UserfileRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row3 type methods
+    // Row4 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row3<Integer, String, String> fieldsRow() {
-        return (Row3) super.fieldsRow();
+    public Row4<Double, Double, String, String> fieldsRow() {
+        return (Row4) super.fieldsRow();
     }
 }
