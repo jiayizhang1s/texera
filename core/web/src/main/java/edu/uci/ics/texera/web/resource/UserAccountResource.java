@@ -21,6 +21,8 @@ import org.jooq.SQLDialect;
 import org.jooq.Select;
 import org.jooq.impl.DSL;
 
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
+
 import edu.uci.ics.texera.web.TexeraWebException;
 import edu.uci.ics.texera.web.resource.generated.tables.records.UseraccountRecord;
 import edu.uci.ics.texera.web.response.GenericWebResponse;
@@ -30,6 +32,7 @@ import static org.jooq.impl.DSL.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.List;
 
 
@@ -37,11 +40,6 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class UserAccountResource {
-    private final static String serverName = TexeraMysqlServerInfo.getServername();
-    private final static String password = TexeraMysqlServerInfo.getPassword();
-    private final static String url = TexeraMysqlServerInfo.getUrl();
-    
-    
     /**
      * Corresponds to `src/app/dashboard/type/user-account.ts`
      */
@@ -75,7 +73,7 @@ public class UserAccountResource {
             return new UserAccountResponse(0, userAccount, "");
         }
 
-        public UserAccountResponse(int code, UserAccount userAccount, String message) {
+        private UserAccountResponse(int code, UserAccount userAccount, String message) {
             this.code = code;
             this.userAccount = userAccount;
             this.message = message;
@@ -90,8 +88,8 @@ public class UserAccountResource {
             return UserAccountResponse.generateErrorResponse("The username or password is incorrect");
         }
 
-        Condition loginCondition = USERACCOUNT.USERNAME.equal(userName); // TODO compare password
-        Record1<Integer> result = getUserID(loginCondition);
+        Condition loginCondition = USERACCOUNT.USERNAME.equal(userName);
+        Record1<Double> result = getUserID(loginCondition);
 
         if (result == null) { // not found
             return UserAccountResponse.generateErrorResponse("The username or password is incorrect");
@@ -114,9 +112,9 @@ public class UserAccountResource {
         }
         
         Condition registerCondition = USERACCOUNT.USERNAME.equal(userName);
-        Record1<Integer> result = getUserID(registerCondition);
+        Record1<Double> result = getUserID(registerCondition);
         
-        if (result == null) { // not found and register is allowed, potential problem for concurrency
+        if (result == null) { // userName not found and register is allowed, potential problem for concurrency
             UseraccountRecord returnID = insertUserAccount(userName);
             UserAccount account = new UserAccount(
                     userName,
@@ -128,10 +126,12 @@ public class UserAccountResource {
         }
     }
     
-    private Record1<Integer> getUserID(Condition condition) {
-        try (Connection conn = DriverManager.getConnection(url, serverName, password)) {
-            DSLContext create = DSL.using(conn, SQLDialect.MYSQL);
-            Record1<Integer> result = create
+    private Record1<Double> getUserID(Condition condition) {
+        // Connection is AutoCloseable so it will automatically close when it finishes.
+        try (Connection conn = UserMysqlServer.getConnection()) {
+            DSLContext create = UserMysqlServer.createDSLContext(conn);
+            
+            Record1<Double> result = create
                     .select(USERACCOUNT.USERID)
                     .from(USERACCOUNT)
                     .where(condition)
@@ -143,8 +143,9 @@ public class UserAccountResource {
     }
     
     private UseraccountRecord insertUserAccount(String userName) {
-        try (Connection conn = DriverManager.getConnection(url, serverName, password)) {
-            DSLContext create = DSL.using(conn, SQLDialect.MYSQL);
+        // Connection is AutoCloseable so it will automatically close when it finishes.
+        try (Connection conn = UserMysqlServer.getConnection()) {
+            DSLContext create = UserMysqlServer.createDSLContext(conn);
             
             UseraccountRecord result = create.insertInto(USERACCOUNT)
                     .set(USERACCOUNT.USERNAME, userName)
