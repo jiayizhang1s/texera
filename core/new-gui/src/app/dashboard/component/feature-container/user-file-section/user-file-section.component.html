@@ -1,0 +1,30 @@
+<div class="user-dictionary-container subsection-grid-container">
+  <mat-card class="button-area subsection-grid-container">
+    <div ngbDropdown class="d-inline-block">
+      <button type="button" class="btn btn-outline-dark add-button" (click)="openFileAddComponent()">
+        <i class="fa fa-cloud-upload"></i>
+      </button>
+    </div>
+  </mat-card>
+
+  <mat-card class="user-dictionary-list subsection-grid-container">
+    <mat-card-content>
+      <mat-list>
+        <h2 class="page-title">Files</h2>
+        <br />
+        <div class="scroll">
+          <mat-list-item *ngFor="let index of getFileArrayLength()" class="user-dictionary-list-item">
+            <div class="section-for-tip" placement="bottom">
+              <p font-size=10px><span class="dict-name">
+                  {{getFileName(index)}}</span>
+              </p>
+            </div>
+            <span class="gap-filler"></span>
+            <button mat-button class="delete-project-btn" placement="bottom" ngbTooltip="Delete the {{getFileName(index)}}"
+              (click)="deleteFile(index)"><i class="fa fa-trash"></i></button>
+          </mat-list-item>
+        </div>
+      </mat-list>
+    </mat-card-content>
+  </mat-card>
+</div>>

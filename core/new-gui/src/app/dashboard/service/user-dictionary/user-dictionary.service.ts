@@ -4,15 +4,11 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { UserDictionary } from './user-dictionary.interface';
 import { environment } from '../../../../environments/environment';
+import { GenericWebResponse } from '../../type/generic-web-response';
 
 const dictionaryUrl = 'users/dictionaries';
 const uploadDictionaryUrl = 'users/dictionaries/upload-file';
 const uploadFilesURL = 'users/dictionaries/upload-files';
-
-export interface GenericWebResponse {
-  code: number;
-  message: string;
-}
 
 /**
  * User Dictionary service should be able to get all the saved-dictionary
