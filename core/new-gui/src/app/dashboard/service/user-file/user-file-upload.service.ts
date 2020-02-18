@@ -48,21 +48,28 @@ export class UserFileUploadService {
           this.deleteFile(fileUploadItem);
         }, error => {
           // TODO
+          console.log(error);
         }
       )
     );
   }
 
   private uploadFile(fileUploadItem: FileUploadItem): Observable<GenericWebResponse> {
+    if (!this.userAccountService.isLogin()){
+      throw new Error(`Can not upload files when not login`)
+    }
     fileUploadItem.setUploading(true);
     const formData: FormData = new FormData();
     formData.append('file', fileUploadItem.getFile(), fileUploadItem.getName());
     formData.append('size', fileUploadItem.getSize().toString());
     formData.append('description', fileUploadItem.description);
-    return this.postUserFile(formData);
+    return this.postUserFile(formData, this.userAccountService.getCurrentUserField('userID'));
   }
 
-  private postUserFile(formData: FormData): Observable<GenericWebResponse> {
-    return this.http.post<GenericWebResponse>(`${environment.apiUrl}/${postFileUrl}`, formData);
+  private postUserFile(formData: FormData, userID: number): Observable<GenericWebResponse> {
+    return this.http.post<GenericWebResponse>(
+      `${environment.apiUrl}/${postFileUrl}/${userID}`,
+      formData
+      );
   }
 }

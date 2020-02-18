@@ -7,7 +7,7 @@ import { FileUploadItem } from '../../../../type/file-upload-item';
 @Component({
   selector: 'texera-ngbd-modal-file-add',
   templateUrl: './ngbd-modal-file-add.component.html',
-  styleUrls: ['./ngbd-modal-file-add.component.scss']
+  styleUrls: ['./ngbd-modal-file-add.component.scss'],
 })
 export class NgbdModalFileAddComponent implements OnInit {
 

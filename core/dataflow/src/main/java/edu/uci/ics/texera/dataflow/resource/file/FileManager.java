@@ -1,16 +1,23 @@
 package edu.uci.ics.texera.dataflow.resource.file;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import edu.uci.ics.texera.api.exception.StorageException;
+import edu.uci.ics.texera.api.exception.TexeraException;
 import edu.uci.ics.texera.api.utils.Utils;
 
 public class FileManager {
     private static FileManager instance = null;
-    private final static Path FILE_CONTAINER_PATH = Utils.getTexeraHomePath().resolve("user-resources").resolve("files");
+    private final static Path FILE_CONTAINER_PATH = Paths.get("").resolve("user-resources").resolve("files");
     
     private FileManager() {}
     
@@ -33,12 +40,11 @@ public class FileManager {
         return getFileDirectory(userID).resolve(fileName);
     }
     
-    public void storeFile(InputStream fileStream, String fileName, String userID, double fileID) {
-        Path fileDirectory = getFileDirectory(userID);
-        createFileDirectoryIfNotExist(fileDirectory);
+    public void storeFile(InputStream fileStream, String fileName, String userID) {
+        createFileDirectoryIfNotExist(getFileDirectory(userID));
         checkFileDuplicate(getFilePath(userID, fileName));
         
-        //TODO store file
+        writeToFile(getFilePath(userID, fileName), fileStream);
     }
     
     private void createFileDirectoryIfNotExist(Path directoryPath) {
@@ -46,14 +52,29 @@ public class FileManager {
             try {
                 Files.createDirectories(directoryPath);
             } catch (IOException e) {
-                throw new StorageException(e);
+                throw new TexeraException(e);
             }
         }
     }
     
     private void checkFileDuplicate(Path filePath) throws StorageException {
         if (Files.exists(filePath)) {
-            throw new StorageException("File alread exists");
+            throw new TexeraException("File alread exists");
         }
     }
+    
+    private void writeToFile(Path filePath, InputStream fileStream) {
+        String line;
+        try (
+                BufferedReader reader = new BufferedReader(new InputStreamReader(fileStream));
+                BufferedWriter writer = new BufferedWriter(new FileWriter(filePath.toString()))
+                ){
+            while ((line = reader.readLine()) != null) {
+                writer.write(line);
+            }
+        } catch (IOException e) {
+            throw new TexeraException("Error occurred whlie writing file on disk");
+        }
+    }
+    
 }
