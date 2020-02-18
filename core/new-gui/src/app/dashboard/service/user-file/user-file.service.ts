@@ -24,6 +24,10 @@ export class UserFileService {
     return this.fileArray[index];
   }
 
+  public getFileArray(): UserFile[] {
+    return this.fileArray;
+  }
+
   public getFileField<Field extends keyof UserFile>(index: number, field: Field): UserFile[Field] {
     return this.getFile(index)[field];
   }
@@ -43,7 +47,7 @@ export class UserFileService {
   }
 
   public deleteFile(targetFile: UserFile): void {
-    this.fileArray.filter(
+    this.fileArray = this.fileArray.filter(
       userFile => userFile !== targetFile
     );
   }

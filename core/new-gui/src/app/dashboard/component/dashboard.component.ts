@@ -20,8 +20,7 @@ import { UserFileUploadService } from '../service/user-file/user-file-upload.ser
   styleUrls: ['./dashboard.component.scss'],
   providers: [
     { provide: UserDictionaryService, useClass: UserDictionaryService },
-    { provide: SavedProjectService, useClass: StubSavedProjectService },
-    UserFileUploadService
+    { provide: SavedProjectService, useClass: StubSavedProjectService }
   ]
 })
 export class DashboardComponent implements OnInit {

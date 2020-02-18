@@ -4,14 +4,14 @@ import { GenericWebResponse } from '../../type/generic-web-response';
 import { Observable } from 'rxjs';
 import { UserAccountService } from '../user-account/user-account.service';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import { environment } from '../../../../environments/environment';
 import { UserFileService } from './user-file.service';
 
 const postFileUrl = 'users/files/upload-file';
 
 @Injectable()
 export class UserFileUploadService {
-  private fileUploadItems: FileUploadItem[] = [];
+  private fileUploadItemArray: FileUploadItem[] = [];
 
   constructor(
     private userAccountService: UserAccountService,
@@ -19,25 +19,29 @@ export class UserFileUploadService {
     private http: HttpClient) {}
 
   public insertNewFile(file: File): void {
-    this.fileUploadItems.push(new FileUploadItem(file));
+    this.fileUploadItemArray.push(new FileUploadItem(file));
+  }
+
+  public getFileArray(): FileUploadItem[] {
+    return this.fileUploadItemArray;
   }
 
   public getFileArrayLength(): number {
-    return this.fileUploadItems.length;
+    return this.fileUploadItemArray.length;
   }
 
   public getFileUploadItem(index: number): FileUploadItem {
-    return this.fileUploadItems[index];
+    return this.fileUploadItemArray[index];
   }
 
   public deleteFile(fileUploadItem: FileUploadItem): void {
-    this.fileUploadItems.filter(
+    this.fileUploadItemArray = this.fileUploadItemArray.filter(
       file => file !== fileUploadItem
     );
   }
 
   public uploadAllFiles() {
-    this.fileUploadItems.forEach(
+    this.fileUploadItemArray.forEach(
       fileUploadItem => this.uploadFile(fileUploadItem).subscribe(
         () => {
           this.userFileService.updateFiles();

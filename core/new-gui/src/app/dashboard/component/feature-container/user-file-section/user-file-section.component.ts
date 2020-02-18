@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgbdModalFileAddComponent } from './ngbd-modal-file-add/ngbd-modal-file-add.component';
-import { UserFileService } from 'src/app/dashboard/service/user-file/user-file.service';
-import { UserFile } from 'src/app/dashboard/type/user-file';
+import { UserFileService } from '../../../service/user-file/user-file.service';
+import { UserFile } from '../../../type/user-file';
 
 @Component({
   selector: 'texera-user-file-section',
@@ -23,20 +23,16 @@ export class UserFileSectionComponent implements OnInit {
     const modalRef = this.modalService.open(NgbdModalFileAddComponent);
   }
 
-  public getFileField<Field extends keyof UserFile>(index: number, field: Field): UserFile[Field] {
-    return this.userFileService.getFileField(index, field);
-  }
-
-  public getFileName(index: number): string {
-    return this.getFileField(index, 'name');
+  public getFileArray(): UserFile[] {
+    return this.userFileService.getFileArray();
   }
 
   public getFileArrayLength(): number {
     return this.userFileService.getFileArrayLength();
   }
 
-  public deleteFile(index: number): void {
-    this.userFileService.deleteFile(this.userFileService.getFile(index));
+  public deleteFile(userFile: UserFile): void {
+    this.userFileService.deleteFile(userFile);
   }
 
 }

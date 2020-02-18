@@ -20,11 +20,11 @@
 
   </div>
   <div *ngIf="getFileArrayLength()">
-    <li *ngFor="let index of getFileArrayLength()" class="file-queue-item">
+    <li *ngFor="let fileUploadItem of getFileArray()" class="file-queue-item">
       <span>
-        <label>{{ getFileName(index) }}</label>
+        <label>{{ fileUploadItem.getName() }}</label>
       </span>
-      <button class="queue-delete-button" (click)="deleteFile(index)">
+      <button class="queue-delete-button" (click)="deleteFile(fileUploadItem)">
         <i class="fa fa-trash" aria-hidden="true"></i>
       </button>
     </li>
@@ -34,7 +34,7 @@
 <div class="modal-footer">
   <div *ngIf="getFileArrayLength()">
     <button class="btn btn-primary btn-xs bottom-upload bottom-size"
-      (click)="uploadAllFiles()">
+      (click)="uploadAllFiles()"> upload
     </button>
   </div>
   <button class="btn btn-outline-dark bottom-size" (click)="activeModal.dismiss('close')">Close</button>

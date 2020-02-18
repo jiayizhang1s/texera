@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FileUploader } from 'ng2-file-upload';
-import { UserFileUploadService } from 'src/app/dashboard/service/user-file/user-file-upload.service';
+import { UserFileUploadService } from '../../../../service/user-file/user-file-upload.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { FileUploadItem } from '../../../../type/file-upload-item';
 
 @Component({
   selector: 'texera-ngbd-modal-file-add',
@@ -26,16 +27,16 @@ export class NgbdModalFileAddComponent implements OnInit {
   ngOnInit() {
   }
 
-  public getFileName(index: number): string {
-    return this.userFileUploadService.getFileUploadItem(index).getName();
+  public getFileArray(): FileUploadItem[] {
+    return this.userFileUploadService.getFileArray();
   }
 
   public getFileArrayLength(): number {
     return this.userFileUploadService.getFileArrayLength();
   }
 
-  public deleteFile(index: number): void {
-    this.userFileUploadService.deleteFile(this.userFileUploadService.getFileUploadItem(index));
+  public deleteFile(fileUploadItem: FileUploadItem): void {
+    this.userFileUploadService.deleteFile(fileUploadItem);
   }
 
   public uploadAllFiles() {

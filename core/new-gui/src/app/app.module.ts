@@ -67,6 +67,7 @@ import { UserAccountService } from './dashboard/service/user-account/user-accoun
 import { UserFileService } from './dashboard/service/user-file/user-file.service';
 import { UserFileSectionComponent } from './dashboard/component/feature-container/user-file-section/user-file-section.component';
 import { NgbdModalFileAddComponent } from './dashboard/component/feature-container/user-file-section/ngbd-modal-file-add/ngbd-modal-file-add.component';
+import { UserFileUploadService } from './dashboard/service/user-file/user-file-upload.service';
 
 @NgModule({
   declarations: [
@@ -132,12 +133,14 @@ import { NgbdModalFileAddComponent } from './dashboard/component/feature-contain
     NgbdModalResourceAddComponent,
     NgbdModalResourceDeleteComponent,
     NgbdModalUserAccountLoginComponent,
-    NgbModalComponent
+    NgbModalComponent,
+    NgbdModalFileAddComponent
   ],
   providers: [
     HttpClientModule,
     UserAccountService,
-    UserFileService
+    UserFileService,
+    UserFileUploadService
   ],
   bootstrap: [AppComponent],
   // dynamically created component must be placed in the entryComponents attribute
