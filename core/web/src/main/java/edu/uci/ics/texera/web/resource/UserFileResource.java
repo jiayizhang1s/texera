@@ -3,6 +3,7 @@ package edu.uci.ics.texera.web.resource;
 import static org.jooq.impl.DSL.defaultValue;
 
 import java.io.InputStream;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -77,7 +79,7 @@ public class UserFileResource {
     @GET
     @Path("/get-files/{userID}")
     public List<UserFile> getUserFiles(@PathParam("userID") String userID){
-        double userIDDouble = parseUserID(userID);
+        double userIDDouble = parseStringToDouble(userID);
         
         Result<Record3<Double, String, String>> result = getUserFileRecord(userIDDouble);
         
@@ -94,6 +96,51 @@ public class UserFileResource {
                         ).collect(Collectors.toList());
         
         return fileList;
+    }
+    
+    @DELETE
+    @Path("/delete-file/{fileID}")
+    public GenericWebResponse deleteUserFiles(@PathParam("fileID") String fileID) {
+        double fileIDDouble = parseStringToDouble(fileID);
+        Record1<String> result = deleteInDatabase(fileIDDouble);
+        
+        if (result == null) throw new TexeraWebException("The file does not exist");
+        
+        String filePath = result.get(USERFILE.FILEPATH);
+        FileManager.getInstance().deleteFile(Paths.get(filePath));
+        
+        return new GenericWebResponse(0, "success");
+    }
+    
+    private Record1<String> deleteInDatabase(double fileID) {
+        // Connection is AutoCloseable so it will automatically close when it finishes.
+        try (Connection conn = UserMysqlServer.getConnection()) {
+            DSLContext create = UserMysqlServer.createDSLContext(conn);
+            
+            /**
+             * Known problem for jooq 3.x
+             * delete...returning clause does not work properly
+             * retrieve the filepath first, then delete it.
+             */
+            Record1<String> result = create
+                    .select(USERFILE.FILEPATH)
+                    .from(USERFILE)
+                    .where(USERFILE.FILEID.eq(fileID))
+                    .fetchOne();
+            
+            int count = create
+                    .delete(USERFILE)
+                    .where(USERFILE.FILEID.eq(fileID))
+                    //.returning(USERFILE.FILEPATH) does not work
+                    .execute();
+            
+            if (count == 0) throw new TexeraWebException("delete file " + fileID + "failed in database");
+            
+            return result;
+            
+        } catch (Exception e) {
+            throw new TexeraWebException(e);
+        }
     }
     
     private Result<Record3<Double, String, String>> getUserFileRecord(double userID) {
@@ -115,23 +162,22 @@ public class UserFileResource {
     }
     
     private void handleFileUpload(InputStream fileStream, String fileName, String userID) {
-        double userIDDouble = parseUserID(userID);
+        double userIDDouble = parseStringToDouble(userID);
         checkFileNameValid(fileName);
         
-        UserfileRecord userFileRecord = insertFileToDataBase(
+        int result = insertFileToDataBase(
                 fileName, 
                 FileManager.getFilePath(userID, fileName).toString(),
                 userIDDouble);
         
-        if (userFileRecord == null) {
+        if (result == 0) {
             throw new TexeraWebException("Error occurred while inserting file record to database");
         }
         
-        double fileID = userFileRecord.getFileid();
         FileManager.getInstance().storeFile(fileStream, fileName, userID);
     }
     
-    private double parseUserID(String userID) throws TexeraWebException {
+    private double parseStringToDouble(String userID) throws TexeraWebException {
         try {
             return Double.parseDouble(userID);
         } catch (NumberFormatException e) {
@@ -140,19 +186,18 @@ public class UserFileResource {
     }
     
     
-    private UserfileRecord insertFileToDataBase(String fileName, String path, double userID) {
+    private int insertFileToDataBase(String fileName, String path, double userID) {
         // Connection is AutoCloseable so it will automatically close when it finishes.
         try (Connection conn = UserMysqlServer.getConnection()) {
             DSLContext create = UserMysqlServer.createDSLContext(conn);
             
-            UserfileRecord result = create.insertInto(USERFILE)
+            int result = create.insertInto(USERFILE)
                     .set(USERFILE.USERID,userID)
                     .set(USERFILE.FILEID, defaultValue(USERFILE.FILEID))
                     .set(USERFILE.FILENAME, fileName)
                     .set(USERFILE.FILEPATH, path)
                     //.set(USERFILE.DESCRIPTION, "")
-                    .returning(USERFILE.FILEID)
-                    .fetchOne();
+                    .execute();
             
             return result;
             

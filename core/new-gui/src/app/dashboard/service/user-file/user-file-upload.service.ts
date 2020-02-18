@@ -16,7 +16,9 @@ export class UserFileUploadService {
   constructor(
     private userAccountService: UserAccountService,
     private userFileService: UserFileService,
-    private http: HttpClient) {}
+    private http: HttpClient) {
+      this.detectUserChanges();
+    }
 
   public insertNewFile(file: File): void {
     this.fileUploadItemArray.push(new FileUploadItem(file));
@@ -55,21 +57,35 @@ export class UserFileUploadService {
   }
 
   private uploadFile(fileUploadItem: FileUploadItem): Observable<GenericWebResponse> {
-    if (!this.userAccountService.isLogin()){
-      throw new Error(`Can not upload files when not login`)
+    if (!this.userAccountService.isLogin()) {
+      throw new Error(`Can not upload files when not login`);
     }
     fileUploadItem.setUploading(true);
     const formData: FormData = new FormData();
     formData.append('file', fileUploadItem.getFile(), fileUploadItem.getName());
     formData.append('size', fileUploadItem.getSize().toString());
     formData.append('description', fileUploadItem.description);
-    return this.postUserFile(formData, this.userAccountService.getCurrentUserField('userID'));
+    return this.postFileHttpRequest(formData, this.userAccountService.getCurrentUserField('userID'));
   }
 
-  private postUserFile(formData: FormData, userID: number): Observable<GenericWebResponse> {
+  private postFileHttpRequest(formData: FormData, userID: number): Observable<GenericWebResponse> {
     return this.http.post<GenericWebResponse>(
       `${environment.apiUrl}/${postFileUrl}/${userID}`,
       formData
       );
+  }
+
+  private detectUserChanges(): void {
+    this.userAccountService.getUserChangeEvent().subscribe(
+      () => {
+        if (!this.userAccountService.isLogin()) {
+          this.clearUserFile();
+        }
+      }
+    );
+  }
+
+  private clearUserFile(): void {
+    this.fileUploadItemArray = [];
   }
 }

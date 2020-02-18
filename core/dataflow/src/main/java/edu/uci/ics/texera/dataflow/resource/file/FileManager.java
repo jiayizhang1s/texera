@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.CharBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,7 +18,7 @@ import edu.uci.ics.texera.api.utils.Utils;
 
 public class FileManager {
     private static FileManager instance = null;
-    private final static Path FILE_CONTAINER_PATH = Paths.get("").resolve("user-resources").resolve("files");
+    private final static Path FILE_CONTAINER_PATH = Utils.getTexeraHomePath().resolve("user-resources").resolve("files");
     
     private FileManager() {}
     
@@ -47,6 +48,14 @@ public class FileManager {
         writeToFile(getFilePath(userID, fileName), fileStream);
     }
     
+    public void deleteFile(Path filePath) {
+        try {
+            Files.deleteIfExists(filePath);
+        } catch(Exception e){
+            throw new TexeraException("Error occur when deleting the file " + filePath.toString());
+        }
+    }
+    
     private void createFileDirectoryIfNotExist(Path directoryPath) {
         if (!Files.exists(directoryPath)) {
             try {
@@ -64,13 +73,13 @@ public class FileManager {
     }
     
     private void writeToFile(Path filePath, InputStream fileStream) {
-        String line;
+        char[] charArray = new char[1024];
         try (
                 BufferedReader reader = new BufferedReader(new InputStreamReader(fileStream));
                 BufferedWriter writer = new BufferedWriter(new FileWriter(filePath.toString()))
                 ){
-            while ((line = reader.readLine()) != null) {
-                writer.write(line);
+            while (reader.read(charArray) != -1) {
+                writer.write(charArray);
             }
         } catch (IOException e) {
             throw new TexeraException("Error occurred whlie writing file on disk");

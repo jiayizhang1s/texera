@@ -9,6 +9,7 @@ import { GenericWebResponse } from '../../type/generic-web-response';
 import { FileUploadItem } from '../../type/file-upload-item';
 
 const getFilesUrl = 'users/files/get-files';
+const deleteFilesUrl = 'users/files/delete-file';
 
 @Injectable()
 export class UserFileService {
@@ -39,7 +40,7 @@ export class UserFileService {
   public updateFiles(): void {
     if (!this.userAccountService.isLogin()) {return; }
 
-    this.getUserFiles(
+    this.getFilesHttpRequest(
       this.userAccountService.getCurrentUserField('userID')
       ).subscribe(
       files => this.fileArray = files
@@ -47,11 +48,17 @@ export class UserFileService {
   }
 
   public deleteFile(targetFile: UserFile): void {
-    // TODO
+    this.deleteFileHttpRequest(targetFile.id).subscribe(
+      () => this.updateFiles()
+    );
+  }
+
+  public deleteFileHttpRequest(fileID: number): Observable<GenericWebResponse> {
+    return this.http.delete<GenericWebResponse>(`${environment.apiUrl}/${deleteFilesUrl}/${fileID}`);
   }
 
 
-  private getUserFiles(userID: number): Observable<UserFile[]> {
+  private getFilesHttpRequest(userID: number): Observable<UserFile[]> {
     return this.http.get<UserFile[]>(`${environment.apiUrl}/${getFilesUrl}/${userID}`);
   }
 

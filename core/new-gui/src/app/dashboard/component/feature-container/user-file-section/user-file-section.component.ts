@@ -3,6 +3,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgbdModalFileAddComponent } from './ngbd-modal-file-add/ngbd-modal-file-add.component';
 import { UserFileService } from '../../../service/user-file/user-file.service';
 import { UserFile } from '../../../type/user-file';
+import { UserAccountService } from '../../../service/user-account/user-account.service';
 
 @Component({
   selector: 'texera-user-file-section',
@@ -13,7 +14,8 @@ export class UserFileSectionComponent implements OnInit {
 
   constructor(
     private modalService: NgbModal,
-    private userFileService: UserFileService
+    private userFileService: UserFileService,
+    private userAccountService: UserAccountService
     ) { }
 
   ngOnInit() {
@@ -33,6 +35,10 @@ export class UserFileSectionComponent implements OnInit {
 
   public deleteFile(userFile: UserFile): void {
     this.userFileService.deleteFile(userFile);
+  }
+
+  public disableAddButton(): boolean {
+    return !this.userAccountService.isLogin();
   }
 
 }
