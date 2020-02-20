@@ -1,14 +1,18 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
 import { UserDictionary } from './user-dictionary.interface';
 import { environment } from '../../../../environments/environment';
 import { GenericWebResponse } from '../../type/generic-web-response';
+import { UserAccountService } from '../user-account/user-account.service';
 
 const dictionaryUrl = 'users/dictionaries';
 const uploadDictionaryUrl = 'users/dictionaries/upload-file';
 const uploadFilesURL = 'users/dictionaries/upload-files';
+
+const getDictionaryUrl = 'users/dictionaries/get-dictionary';
+const deleteDictionaryUrl = 'users/dictionaries/delete-dictionary';
 
 /**
  * User Dictionary service should be able to get all the saved-dictionary
@@ -17,13 +21,33 @@ const uploadFilesURL = 'users/dictionaries/upload-files';
  *  by calling methods in service. StubUserDictionaryService is used for replacing
  *  real service to complete testing cases. It uploads the mock data to the dashboard.
  *
- * @author Zhaomin Li
+ * @author Chen He
  */
 
 @Injectable()
 export class UserDictionaryService {
+  private dictionaryArray: UserDictionary[] = [];
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private userAccountService: UserAccountService) { }
+
+  public refreshDictionary(): void {
+    if (!this.userAccountService.isLogin()) {return; }
+
+    this.getDictionaryHttpRequest(
+      this.userAccountService.getCurrentUserField('userID')
+      ).subscribe(
+      dictionaries => {this.dictionaryArray = dictionaries;
+      }
+    );
+  }
+
+  public deleteDictionary(dictID: number) {
+    this.deleteDictionaryHttpRequest(dictID).subscribe(
+      () => this.refreshDictionary()
+    );
+  }
 
   /**
    * This method will list all the dictionaries existing in the
@@ -103,6 +127,14 @@ export class UserDictionaryService {
    */
   public deleteUserDictionaryData(dictID: string): Observable<GenericWebResponse> {
     return this.http.delete<GenericWebResponse>(`${environment.apiUrl}/${dictionaryUrl}/${dictID}`);
+  }
+
+  private getDictionaryHttpRequest(userID: number): Observable<UserDictionary[]> {
+    return this.http.get<UserDictionary[]>(`${environment.apiUrl}/${getDictionaryUrl}/${userID}`);
+  }
+
+  private deleteDictionaryHttpRequest(dictID: number): Observable<GenericWebResponse> {
+    return this.http.delete<GenericWebResponse>(`${environment.apiUrl}/${deleteDictionaryUrl}/${dictID}`);
   }
 
 }

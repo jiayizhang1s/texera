@@ -46,7 +46,7 @@ export class UserFileUploadService {
     this.fileUploadItemArray.forEach(
       fileUploadItem => this.uploadFile(fileUploadItem).subscribe(
         () => {
-          this.userFileService.updateFiles();
+          this.userFileService.refreshFiles();
           this.deleteFile(fileUploadItem);
         }, error => {
           // TODO

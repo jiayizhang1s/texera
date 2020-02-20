@@ -59,13 +59,13 @@ export class NgbdModalFileAddComponent implements OnInit {
   }
 
   public handleClickUploadFile(clickUploadEvent: {target: HTMLInputElement}): void {
-    const filelist: FileList | null = clickUploadEvent.target.files;
-    if (filelist === null) {
+    const fileList: FileList | null = clickUploadEvent.target.files;
+    if (fileList === null) {
       throw new Error(`browser upload does not work as intended`);
     }
 
-    for (let i = 0; i < filelist.length; i++) {
-      this.userFileUploadService.insertNewFile(filelist[i]);
+    for (let i = 0; i < fileList.length; i++) {
+      this.userFileUploadService.insertNewFile(fileList[i]);
     }
   }
 

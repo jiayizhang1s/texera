@@ -8,3 +8,11 @@ export interface UserFile extends Readonly<{
   path: string;
   description: string;
 }> {}
+
+export interface FileUploadItem {
+  file: File;
+  name: string;
+  description: string;
+  uploadProgress: number;
+  isUploadingFlag: boolean;
+}

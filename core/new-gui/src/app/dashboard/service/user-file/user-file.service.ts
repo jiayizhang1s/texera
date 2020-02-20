@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { UserFile } from '../../type/user-file';
 import { UserAccountService } from '../user-account/user-account.service';
 import { Observable } from 'rxjs';
@@ -14,10 +14,12 @@ const deleteFilesUrl = 'users/files/delete-file';
 @Injectable()
 export class UserFileService {
   private fileArray: UserFile[] = [];
+  private fileChangeEvent: EventEmitter<string> = new EventEmitter();
 
   constructor(
     private userAccountService: UserAccountService,
-    private http: HttpClient) {
+    private http: HttpClient
+    ) {
       this.detectUserChanges();
     }
 
@@ -37,19 +39,25 @@ export class UserFileService {
     return this.fileArray.length;
   }
 
-  public updateFiles(): void {
+  public getFileChangeEvent(): EventEmitter<string> {
+    return this.fileChangeEvent;
+  }
+
+  public refreshFiles(): void {
     if (!this.userAccountService.isLogin()) {return; }
 
     this.getFilesHttpRequest(
       this.userAccountService.getCurrentUserField('userID')
       ).subscribe(
-      files => this.fileArray = files
+      files => {this.fileArray = files;
+      this.fileChangeEvent.emit('');
+      }
     );
   }
 
   public deleteFile(targetFile: UserFile): void {
     this.deleteFileHttpRequest(targetFile.id).subscribe(
-      () => this.updateFiles()
+      () => this.refreshFiles()
     );
   }
 
@@ -66,7 +74,7 @@ export class UserFileService {
     this.userAccountService.getUserChangeEvent().subscribe(
       () => {
         if (this.userAccountService.isLogin()) {
-          this.updateFiles();
+          this.refreshFiles();
         } else {
           this.clearUserFile();
         }
@@ -76,5 +84,7 @@ export class UserFileService {
 
   private clearUserFile(): void {
     this.fileArray = [];
+    this.fileChangeEvent.emit('');
   }
+
 }

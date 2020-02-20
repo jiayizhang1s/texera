@@ -91,32 +91,7 @@ export class UserDictionarySectionComponent {
   * @param
   */
   public openNgbdModalResourceAddComponent(): void {
-    const modalRef = this.modalService.open(NgbdModalResourceAddComponent, {
-      // before the modal closes, save the state and refresh the dictionaries on the feature container
-      beforeDismiss: (): boolean => {
-        this.savedState = {
-          name: modalRef.componentInstance.dictName,
-          content: modalRef.componentInstance.dictContent,
-          separator: modalRef.componentInstance.dictSeparator,
-          description: modalRef.componentInstance.dictionaryDescription,
-          savedQueue: modalRef.componentInstance.uploader.queue
-        };
-
-        // refresh the dictionaries in the panel to show the new updates done by users
-        this.refreshUserDictionary();
-        return true;
-      }
-    });
-
-    // initialize the value from saving, used when user close the popup and then temporarily save dictionary.
-    modalRef.componentInstance.uploader.queue = this.savedState.savedQueue;
-    modalRef.componentInstance.dictName = this.savedState.name;
-    modalRef.componentInstance.dictContent = this.savedState.content;
-    modalRef.componentInstance.dictSeparator = this.savedState.separator;
-    modalRef.componentInstance.dictionaryDescription = this.savedState.description;
-
-    // checks if the files saved in the state are valid.
-    modalRef.componentInstance.checkCurrentFilesValid();
+    const modalRef = this.modalService.open(NgbdModalResourceAddComponent);
   }
 
   /**

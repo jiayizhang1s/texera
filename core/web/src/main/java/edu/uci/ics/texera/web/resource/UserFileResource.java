@@ -134,7 +134,7 @@ public class UserFileResource {
                     //.returning(USERFILE.FILEPATH) does not work
                     .execute();
             
-            if (count == 0) throw new TexeraWebException("delete file " + fileID + "failed in database");
+            if (count == 0) throw new TexeraWebException("delete file " + fileID + " failed in database");
             
             return result;
             
@@ -181,7 +181,7 @@ public class UserFileResource {
         try {
             return Double.parseDouble(userID);
         } catch (NumberFormatException e) {
-            throw new TexeraWebException("Incorrect User ID");
+            throw new TexeraWebException("Incorrect String to Double");
         }
     }
     
