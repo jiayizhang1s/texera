@@ -141,7 +141,7 @@ public class UserFileResource {
                     //.returning(USERFILE.FILEPATH) does not work
                     .execute();
             
-            if (count == 0) throw new TexeraWebException("delete file " + fileID + " failed in database");
+            throwErrorWhenNotOne("delete file " + fileID + " failed in database", count);
             
             return result;
             
@@ -172,16 +172,14 @@ public class UserFileResource {
         double userIDDouble = parseStringToDouble(userID);
         checkFileNameValid(fileName);
         
-        int result = insertFileToDataBase(
+        int count = insertFileToDataBase(
                 fileName, 
                 FileManager.getFilePath(userID, fileName).toString(),
                 size,
                 description,
                 userIDDouble);
         
-        if (result == 0) {
-            throw new TexeraWebException("Error occurred while inserting file record to database");
-        }
+        throwErrorWhenNotOne("Error occurred while inserting file record to database", count);
         
         FileManager.getInstance().storeFile(fileStream, fileName, userID);
     }
@@ -200,7 +198,7 @@ public class UserFileResource {
         try (Connection conn = UserMysqlServer.getConnection()) {
             DSLContext create = UserMysqlServer.createDSLContext(conn);
             
-            int result = create.insertInto(USERFILE)
+            int count = create.insertInto(USERFILE)
                     .set(USERFILE.USERID,userID)
                     .set(USERFILE.FILEID, defaultValue(USERFILE.FILEID))
                     .set(USERFILE.NAME, fileName)
@@ -209,7 +207,7 @@ public class UserFileResource {
                     .set(USERFILE.SIZE, size)
                     .execute();
             
-            return result;
+            return count;
             
         } catch (Exception e) {
             throw new TexeraWebException(e);
@@ -219,6 +217,19 @@ public class UserFileResource {
     private void checkFileNameValid(String fileName) throws TexeraWebException {
         if (fileName == null || fileName.length() == 0) {
             throw new TexeraWebException("File name invalid");
+        }
+    }
+    
+    /**
+     * Most the sql operation should only be executed once. eg. insertion, deletion.
+     * this method will raise TexeraWebException when the input number is not one
+     * @param errorMessage the message displaying when raising the error
+     * @param number the number to be checked with one
+     * @throws TexeraWebException
+     */
+    private void throwErrorWhenNotOne(String errorMessage, int number) throws TexeraWebException {
+        if (number != 1) {
+            throw new TexeraWebException(errorMessage);
         }
     }
 }

@@ -1,13 +1,9 @@
 import { Component } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { UserDictionaryService } from '../../../../service/user-dictionary/user-dictionary.service';
 import { UserDictionaryUploadService } from '../../../../service/user-dictionary/user-dictionary-upload.service';
-import { UserDictionary } from '../../../../service/user-dictionary/user-dictionary.interface';
-import { v4 as uuid } from 'uuid';
 
-import { FileUploader, FileItem } from 'ng2-file-upload';
-import isEqual from 'lodash-es/isEqual';
+import { FileUploader} from 'ng2-file-upload';
 import { MatTabChangeEvent } from '@angular/material';
 
 import { ErrorStateMatcher } from '@angular/material';
@@ -109,11 +105,11 @@ export class NgbdModalResourceAddComponent {
     }
   }
 
-  public clickUploadDictionaryButton():void{
+  public clickUploadDictionaryButton(): void {
     this.userDictionaryUploadService.uploadAllDictionary();
   }
 
-  public clickUploadManualDictioanryButton():void{
+  public clickUploadManualDictioanryButton(): void {
     this.userDictionaryUploadService.uploadManualDictionary();
   }
 

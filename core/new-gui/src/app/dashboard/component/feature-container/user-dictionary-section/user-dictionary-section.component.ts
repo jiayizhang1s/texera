@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { Observable } from 'rxjs/Observable';
-import { UserDictionary } from '../../../service/user-dictionary/user-dictionary.interface';
+import { UserDictionary } from '../../../type/user-dictionary';
 
 import { UserDictionaryService } from '../../../service/user-dictionary/user-dictionary.service';
 import { UserAccountService } from '../../../service/user-account/user-account.service';
@@ -56,7 +56,7 @@ export class UserDictionarySectionComponent {
   */
   public openNgbdModalResourceViewComponent(dictionary: UserDictionary): void {
     const modalRef = this.modalService.open(NgbdModalResourceViewComponent);
-    modalRef.componentInstance.dictionary = cloneDeep(dictionary);
+    modalRef.componentInstance.dictionary = dictionary;
   }
 
   /**
@@ -86,15 +86,13 @@ export class UserDictionarySectionComponent {
     const modalRef = this.modalService.open(NgbdModalResourceDeleteComponent);
     modalRef.componentInstance.dictionary = cloneDeep(dictionary);
 
-    // Observable.from(modalRef.result).subscribe(
-    //   (confirmDelete: boolean) => {
-    //     if (confirmDelete) {
-    //       this.userDictionaryService.deleteUserDictionaryData(dictionary.id).subscribe(res => {
-    //         this.refreshUserDictionary();
-    //       });
-    //     }
-    //   }
-    // );
+    Observable.from(modalRef.result).subscribe(
+      (confirmDelete: boolean) => {
+        if (confirmDelete) {
+          this.userDictionaryService.deleteDictionary(dictionary.id);
+        }
+      }
+    );
   }
 
   /**

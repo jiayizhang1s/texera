@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { UserDictionary } from '../../../../service/user-dictionary/user-dictionary.interface';
+import { UserDictionary } from '../../../../type/user-dictionary';
 import { UserDictionaryService } from '../../../../service/user-dictionary/user-dictionary.service';
 
 /**
@@ -22,8 +22,9 @@ export class NgbdModalResourceViewComponent {
 
   public dictionary: UserDictionary = {
     name: '',
-    id: '',
-    items: []
+    id: -1,
+    items: [],
+    description: ''
   };
 
   public name: string = '';
@@ -43,7 +44,7 @@ export class NgbdModalResourceViewComponent {
 
     if (this.ifAdd && this.name !== '') {
       this.dictionary.items.push(this.name);
-      // this.userDictionaryService.putUserDictionaryData(this.dictionary).subscribe();
+      this.userDictionaryService.updateDictionary(this.dictionary);
 
       this.name = '';
     }
@@ -59,7 +60,7 @@ export class NgbdModalResourceViewComponent {
   public remove(item: string): void {
 
     this.dictionary.items = this.dictionary.items.filter(dictItems => dictItems !== item);
-    // this.userDictionaryService.putUserDictionaryData(this.dictionary).subscribe();
+    this.userDictionaryService.updateDictionary(this.dictionary);
   }
 }
 

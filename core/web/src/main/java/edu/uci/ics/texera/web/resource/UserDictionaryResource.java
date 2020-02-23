@@ -56,6 +56,8 @@ public class UserDictionaryResource {
         public String name;
         public List<String> items;
         public String description;
+        
+        public UserDictionary() {} // default constructor reserved for json
 
         public UserDictionary(double id, String name, List<String> items, String description) {
             this.id = id;
@@ -71,7 +73,7 @@ public class UserDictionaryResource {
         public String separator;
         public String description;
 
-        public UserManualDictionary() { }
+        public UserManualDictionary() { } // default constructor reserved for json
         
         public boolean isValid() {
             return name != null && name.length() != 0 &&
@@ -97,15 +99,13 @@ public class UserDictionaryResource {
                 );
         byte[] contentByteArray = convertListToByteArray(itemArray);
         
-        int result = insertDictionaryToDataBase(
+        int count = insertDictionaryToDataBase(
                 userManualDictionary.name, 
                 contentByteArray,
                 userManualDictionary.description,
                 userIDDouble);
         
-        if (result == 0) {
-            throw new TexeraWebException("Error occurred while inserting dictionary to database");
-        }
+        throwErrorWhenNotOne("Error occurred while inserting dictionary to database", count);
         
         return new GenericWebResponse(0, "success");
     }
@@ -127,15 +127,13 @@ public class UserDictionaryResource {
         List<String> itemList = convertStringToList(content, separator);
         byte[] contentByteArray = convertListToByteArray(itemList);
         
-        int result = insertDictionaryToDataBase(
+        int count = insertDictionaryToDataBase(
                 fileName,
                 contentByteArray,
                 description,
                 userIDDouble);
         
-        if (result == 0) {
-            throw new TexeraWebException("Error occurred while inserting dictionary to database");
-        }
+        throwErrorWhenNotOne("Error occurred while inserting dictionary to database", count);
         
         return new GenericWebResponse(0, "success");
     }
@@ -172,7 +170,7 @@ public class UserDictionaryResource {
         double dictIDDouble = parseStringToDouble(dictID);
         
         int count = deleteInDatabase(dictIDDouble);
-        if (count == 0) throw new TexeraWebException("delete dictionary " + dictIDDouble + " failed in database");
+        throwErrorWhenNotOne("delete dictionary " + dictIDDouble + " failed in database", count);
         
         return new GenericWebResponse(0, "success");
     }
@@ -184,16 +182,14 @@ public class UserDictionaryResource {
     ) {
         byte[] contentByteArray = convertListToByteArray(userDictionary.items);
         
-        int result = updateInDatabase(
+        int count = updateInDatabase(
                 userDictionary.id,
                 userDictionary.name, 
                 contentByteArray,
                 userDictionary.description
                 );
         
-        if (result == 0) {
-            throw new TexeraWebException("Error occurred while inserting dictionary to database");
-        }
+        throwErrorWhenNotOne("Error occurred while inserting dictionary to database", count);
         
         return new GenericWebResponse(0, "success");
     }
@@ -258,7 +254,7 @@ public class UserDictionaryResource {
         try (Connection conn = UserMysqlServer.getConnection()) {
             DSLContext create = UserMysqlServer.createDSLContext(conn);
             
-            int result = create.insertInto(USERDICT)
+            int count = create.insertInto(USERDICT)
                     .set(USERDICT.USERID,userID)
                     .set(USERDICT.DICTID, defaultValue(USERDICT.DICTID))
                     .set(USERDICT.NAME, name)
@@ -266,7 +262,7 @@ public class UserDictionaryResource {
                     .set(USERDICT.DESCRIPTION, description)
                     .execute();
             
-            return result;
+            return count;
             
         } catch (Exception e) {
             throw new TexeraWebException(e);
@@ -318,12 +314,25 @@ public class UserDictionaryResource {
         return fileContents.toString();
     }
     
-    public List<String> convertStringToList(String content, String separator) {
+    private List<String> convertStringToList(String content, String separator) {
         return Stream.of(
                     content.trim().split(separator)
                 )
                 .filter(s -> !s.isEmpty())
                 .distinct()
                 .collect(Collectors.toList());
+    }
+    
+    /**
+     * Most the sql operation should only be executed once. eg. insertion, deletion.
+     * this method will raise TexeraWebException when the input number is not one
+     * @param errorMessage
+     * @param count
+     * @throws TexeraWebException
+     */
+    private void throwErrorWhenNotOne(String errorMessage, int count) throws TexeraWebException {
+        if (count != 1) {
+            throw new TexeraWebException(errorMessage);
+        }
     }
 }

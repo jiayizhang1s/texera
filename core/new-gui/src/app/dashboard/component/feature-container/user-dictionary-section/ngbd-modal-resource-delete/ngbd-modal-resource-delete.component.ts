@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { UserDictionary } from '../../../../service/user-dictionary/user-dictionary.interface';
+import { UserDictionary } from '../../../../type/user-dictionary';
 
 /**
  * NgbdModalResourceDeleteComponent is the pop-up
@@ -19,8 +19,9 @@ export class NgbdModalResourceDeleteComponent {
 
   public dictionary: UserDictionary = {
     name: '',
-    id: '',
-    items: []
+    id: -1,
+    items: [],
+    description: ''
   };
 
   constructor(public activeModal: NgbActiveModal) {
