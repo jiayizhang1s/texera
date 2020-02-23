@@ -34,7 +34,6 @@ public class Indexes {
 
     public static final Index USERACCOUNT_PRIMARY = Indexes0.USERACCOUNT_PRIMARY;
     public static final Index USERACCOUNT_USERNAME = Indexes0.USERACCOUNT_USERNAME;
-    public static final Index USERACCOUNT_USERNAME_2 = Indexes0.USERACCOUNT_USERNAME_2;
     public static final Index USERDICT_PRIMARY = Indexes0.USERDICT_PRIMARY;
     public static final Index USERDICT_USERID = Indexes0.USERDICT_USERID;
     public static final Index USERFILE_PRIMARY = Indexes0.USERFILE_PRIMARY;
@@ -47,10 +46,9 @@ public class Indexes {
     private static class Indexes0 {
         public static Index USERACCOUNT_PRIMARY = Internal.createIndex("PRIMARY", Useraccount.USERACCOUNT, new OrderField[] { Useraccount.USERACCOUNT.USERID }, true);
         public static Index USERACCOUNT_USERNAME = Internal.createIndex("userName", Useraccount.USERACCOUNT, new OrderField[] { Useraccount.USERACCOUNT.USERNAME }, true);
-        public static Index USERACCOUNT_USERNAME_2 = Internal.createIndex("userName_2", Useraccount.USERACCOUNT, new OrderField[] { Useraccount.USERACCOUNT.USERNAME, Useraccount.USERACCOUNT.USERID }, false);
         public static Index USERDICT_PRIMARY = Internal.createIndex("PRIMARY", Userdict.USERDICT, new OrderField[] { Userdict.USERDICT.DICTID }, true);
-        public static Index USERDICT_USERID = Internal.createIndex("userID", Userdict.USERDICT, new OrderField[] { Userdict.USERDICT.USERID, Userdict.USERDICT.DICTID }, false);
+        public static Index USERDICT_USERID = Internal.createIndex("userID", Userdict.USERDICT, new OrderField[] { Userdict.USERDICT.USERID, Userdict.USERDICT.NAME }, true);
         public static Index USERFILE_PRIMARY = Internal.createIndex("PRIMARY", Userfile.USERFILE, new OrderField[] { Userfile.USERFILE.FILEID }, true);
-        public static Index USERFILE_USERID = Internal.createIndex("userID", Userfile.USERFILE, new OrderField[] { Userfile.USERFILE.USERID, Userfile.USERFILE.FILEID }, false);
+        public static Index USERFILE_USERID = Internal.createIndex("userID", Userfile.USERFILE, new OrderField[] { Userfile.USERFILE.USERID, Userfile.USERFILE.NAME }, true);
     }
 }

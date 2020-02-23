@@ -25,6 +25,7 @@ import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Record1;
 import org.jooq.Record3;
+import org.jooq.Record5;
 import org.jooq.Result;
 
 import static edu.uci.ics.texera.web.resource.generated.Tables.*;
@@ -46,12 +47,14 @@ public class UserFileResource {
         public String name;
         public String path;
         public String description;
+        public double size;
 
-        public UserFile(double id, String name, String path, String description) {
+        public UserFile(double id, String name, String path, String description, double size) {
             this.id = id;
             this.name = name;
             this.path = path;
             this.description = description;
+            this.size = size;
         }
     }
         
@@ -68,10 +71,13 @@ public class UserFileResource {
     public GenericWebResponse uploadDictionaryFile(
             @FormDataParam("file") InputStream uploadedInputStream,
             @FormDataParam("file") FormDataContentDisposition fileDetail,
+            @FormDataParam("size") String size,
+            @FormDataParam("description") String description,
             @PathParam("userID") String userID) {
 
         String fileName = fileDetail.getFileName();
-        this.handleFileUpload(uploadedInputStream, fileName, userID);
+        double sizeDouble = parseStringToDouble(size);
+        this.handleFileUpload(uploadedInputStream, fileName, description, sizeDouble, userID);
         
         return new GenericWebResponse(0, "success");
     }
@@ -81,7 +87,7 @@ public class UserFileResource {
     public List<UserFile> getUserFiles(@PathParam("userID") String userID){
         double userIDDouble = parseStringToDouble(userID);
         
-        Result<Record3<Double, String, String>> result = getUserFileRecord(userIDDouble);
+        Result<Record5<Double, String, String, String, Double>> result = getUserFileRecord(userIDDouble);
         
         if (result == null) return new ArrayList<>();
         
@@ -89,9 +95,10 @@ public class UserFileResource {
                 .map(
                     record -> new UserFile(
                             record.get(USERFILE.FILEID),
-                            record.get(USERFILE.FILENAME),
-                            record.get(USERFILE.FILEPATH),
-                            "" // TODO get description
+                            record.get(USERFILE.NAME),
+                            record.get(USERFILE.PATH),
+                            record.get(USERFILE.DESCRIPTION),
+                            record.get(USERFILE.SIZE)
                             )
                         ).collect(Collectors.toList());
         
@@ -106,7 +113,7 @@ public class UserFileResource {
         
         if (result == null) throw new TexeraWebException("The file does not exist");
         
-        String filePath = result.get(USERFILE.FILEPATH);
+        String filePath = result.get(USERFILE.PATH);
         FileManager.getInstance().deleteFile(Paths.get(filePath));
         
         return new GenericWebResponse(0, "success");
@@ -123,7 +130,7 @@ public class UserFileResource {
              * retrieve the filepath first, then delete it.
              */
             Record1<String> result = create
-                    .select(USERFILE.FILEPATH)
+                    .select(USERFILE.PATH)
                     .from(USERFILE)
                     .where(USERFILE.FILEID.eq(fileID))
                     .fetchOne();
@@ -143,13 +150,13 @@ public class UserFileResource {
         }
     }
     
-    private Result<Record3<Double, String, String>> getUserFileRecord(double userID) {
+    private Result<Record5<Double, String, String, String, Double>> getUserFileRecord(double userID) {
         // Connection is AutoCloseable so it will automatically close when it finishes.
         try (Connection conn = UserMysqlServer.getConnection()) {
             DSLContext create = UserMysqlServer.createDSLContext(conn);
             
-            Result<Record3<Double, String, String>> result = create
-                    .select(USERFILE.FILEID, USERFILE.FILENAME, USERFILE.FILEPATH) // TODO description
+            Result<Record5<Double, String, String, String, Double>> result = create
+                    .select(USERFILE.FILEID, USERFILE.NAME, USERFILE.PATH, USERFILE.DESCRIPTION, USERFILE.SIZE)
                     .from(USERFILE)
                     .where(USERFILE.USERID.equal(userID))
                     .fetch();
@@ -161,13 +168,15 @@ public class UserFileResource {
         }
     }
     
-    private void handleFileUpload(InputStream fileStream, String fileName, String userID) {
+    private void handleFileUpload(InputStream fileStream, String fileName, String description, double size, String userID) {
         double userIDDouble = parseStringToDouble(userID);
         checkFileNameValid(fileName);
         
         int result = insertFileToDataBase(
                 fileName, 
                 FileManager.getFilePath(userID, fileName).toString(),
+                size,
+                description,
                 userIDDouble);
         
         if (result == 0) {
@@ -186,7 +195,7 @@ public class UserFileResource {
     }
     
     
-    private int insertFileToDataBase(String fileName, String path, double userID) {
+    private int insertFileToDataBase(String fileName, String path, double size, String description, double userID) {
         // Connection is AutoCloseable so it will automatically close when it finishes.
         try (Connection conn = UserMysqlServer.getConnection()) {
             DSLContext create = UserMysqlServer.createDSLContext(conn);
@@ -194,9 +203,10 @@ public class UserFileResource {
             int result = create.insertInto(USERFILE)
                     .set(USERFILE.USERID,userID)
                     .set(USERFILE.FILEID, defaultValue(USERFILE.FILEID))
-                    .set(USERFILE.FILENAME, fileName)
-                    .set(USERFILE.FILEPATH, path)
-                    //.set(USERFILE.DESCRIPTION, "")
+                    .set(USERFILE.NAME, fileName)
+                    .set(USERFILE.PATH, path)
+                    .set(USERFILE.DESCRIPTION, description)
+                    .set(USERFILE.SIZE, size)
                     .execute();
             
             return result;

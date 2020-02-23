@@ -20,7 +20,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row4;
+import org.jooq.Row5;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Userdict extends TableImpl<UserdictRecord> {
 
-    private static final long serialVersionUID = 459799730;
+    private static final long serialVersionUID = -1252054186;
 
     /**
      * The reference instance of <code>texera.userdict</code>
@@ -68,14 +68,19 @@ public class Userdict extends TableImpl<UserdictRecord> {
     public final TableField<UserdictRecord, Double> DICTID = createField(DSL.name("dictID"), org.jooq.impl.SQLDataType.DOUBLE.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>texera.userdict.dictName</code>.
+     * The column <code>texera.userdict.name</code>.
      */
-    public final TableField<UserdictRecord, String> DICTNAME = createField(DSL.name("dictName"), org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false), this, "");
+    public final TableField<UserdictRecord, String> NAME = createField(DSL.name("name"), org.jooq.impl.SQLDataType.VARCHAR(128).nullable(false), this, "");
 
     /**
-     * The column <code>texera.userdict.dictContent</code>.
+     * The column <code>texera.userdict.content</code>.
      */
-    public final TableField<UserdictRecord, String> DICTCONTENT = createField(DSL.name("dictContent"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<UserdictRecord, byte[]> CONTENT = createField(DSL.name("content"), org.jooq.impl.SQLDataType.BLOB.nullable(false), this, "");
+
+    /**
+     * The column <code>texera.userdict.description</code>.
+     */
+    public final TableField<UserdictRecord, String> DESCRIPTION = createField(DSL.name("description"), org.jooq.impl.SQLDataType.VARCHAR(512).nullable(false), this, "");
 
     /**
      * Create a <code>texera.userdict</code> table reference
@@ -132,7 +137,7 @@ public class Userdict extends TableImpl<UserdictRecord> {
 
     @Override
     public List<UniqueKey<UserdictRecord>> getKeys() {
-        return Arrays.<UniqueKey<UserdictRecord>>asList(Keys.KEY_USERDICT_PRIMARY);
+        return Arrays.<UniqueKey<UserdictRecord>>asList(Keys.KEY_USERDICT_USERID, Keys.KEY_USERDICT_PRIMARY);
     }
 
     @Override
@@ -171,11 +176,11 @@ public class Userdict extends TableImpl<UserdictRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row5 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Double, Double, String, String> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row5<Double, Double, String, byte[], String> fieldsRow() {
+        return (Row5) super.fieldsRow();
     }
 }

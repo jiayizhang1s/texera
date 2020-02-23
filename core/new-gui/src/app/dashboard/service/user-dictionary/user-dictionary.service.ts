@@ -13,6 +13,7 @@ const uploadFilesURL = 'users/dictionaries/upload-files';
 
 const getDictionaryUrl = 'users/dictionaries/get-dictionary';
 const deleteDictionaryUrl = 'users/dictionaries/delete-dictionary';
+const updateDictionaryUrl = 'users/dictionaries/update-dictionary';
 
 /**
  * User Dictionary service should be able to get all the saved-dictionary
@@ -38,8 +39,7 @@ export class UserDictionaryService {
     this.getDictionaryHttpRequest(
       this.userAccountService.getCurrentUserField('userID')
       ).subscribe(
-      dictionaries => {this.dictionaryArray = dictionaries;
-      }
+      dictionaries => this.dictionaryArray = dictionaries
     );
   }
 
@@ -49,85 +49,100 @@ export class UserDictionaryService {
     );
   }
 
-  /**
-   * This method will list all the dictionaries existing in the
-   *  backend.
-   */
-  public listUserDictionaries(): Observable<UserDictionary[]> {
-    return this.http.get<UserDictionary[]>(`${environment.apiUrl}/${dictionaryUrl}`);
+  public updateDictionary(userDictionary: UserDictionary): void {
+    this.updateDictionaryHttpRequest(userDictionary)
+      .subscribe(
+        () => this.refreshDictionary()
+      );
   }
 
-  /**
-   * This method will get the user dictionary information using the
-   *  dictionary ID.
-   *
-   * The information includes
-   *  1. dictionary ID
-   *  2. dictionary Name
-   *  3. dictionary items
-   *  4. dictionary description
-   *
-   * @param dictID
-   */
-  public getUserDictionary(dictID: string): Observable<UserDictionary> {
-    return this.http.get<UserDictionary>(`${environment.apiUrl}/${dictionaryUrl}/${dictID}`);
+  public getDictionaryArray(): UserDictionary[] {
+    return this.dictionaryArray;
   }
 
-  /**
-   * This method handles the request for uploading a user dictionary
-   *  type object to the backend.
-   *
-   * @param userDict new user dictionary
-   */
-  public putUserDictionaryData(userDict: UserDictionary): Observable<GenericWebResponse> {
-    return this.http.put<GenericWebResponse>(
-      `${environment.apiUrl}/${dictionaryUrl}/${userDict.id}`,
-      JSON.stringify(userDict),
-      {
-        headers: new HttpHeaders({
-          'Content-Type':  'application/json',
-        })
-      }
-    );
+  public getDictionaryArrayLength(): number {
+    return this.dictionaryArray.length;
   }
 
-  /**
-   * This method will handle the request to upload multiple files to the backend.
-   *
-   * @param fileList
-   */
-  public uploadFileList(fileList: File[]): Observable<GenericWebResponse> {
-    const newFormData = new FormData();
-    fileList.forEach(file => {
-      newFormData.append('files', file, file.name);
-    });
+  // /**
+  //  * This method will list all the dictionaries existing in the
+  //  *  backend.
+  //  */
+  // public listUserDictionaries(): Observable<UserDictionary[]> {
+  //   return this.http.get<UserDictionary[]>(`${environment.apiUrl}/${dictionaryUrl}`);
+  // }
 
-    return this.http.post<GenericWebResponse>(`${environment.apiUrl}/${uploadFilesURL}`, newFormData);
-  }
+  // /**
+  //  * This method will get the user dictionary information using the
+  //  *  dictionary ID.
+  //  *
+  //  * The information includes
+  //  *  1. dictionary ID
+  //  *  2. dictionary Name
+  //  *  3. dictionary items
+  //  *  4. dictionary description
+  //  *
+  //  * @param dictID
+  //  */
+  // public getUserDictionary(dictID: string): Observable<UserDictionary> {
+  //   return this.http.get<UserDictionary>(`${environment.apiUrl}/${dictionaryUrl}/${dictID}`);
+  // }
 
-  /**
-   * This method will handle the request for uploading a File type
-   *  dictionary object.
-   *
-   * @param file
-   */
-  public uploadDictionary(file: File): Observable<GenericWebResponse> {
-    const formData: FormData = new FormData();
-    formData.append('file', file, file.name);
+  // /**
+  //  * This method handles the request for uploading a user dictionary
+  //  *  type object to the backend.
+  //  *
+  //  * @param userDict new user dictionary
+  //  */
+  // public putUserDictionaryData(userDict: UserDictionary): Observable<GenericWebResponse> {
+  //   return this.http.put<GenericWebResponse>(
+  //     `${environment.apiUrl}/${dictionaryUrl}/${userDict.id}`,
+  //     JSON.stringify(userDict),
+  //     {
+  //       headers: new HttpHeaders({
+  //         'Content-Type':  'application/json',
+  //       })
+  //     }
+  //   );
+  // }
 
-    return this.http.post<GenericWebResponse>(`${environment.apiUrl}/${uploadDictionaryUrl}`, formData);
-  }
+  // /**
+  //  * This method will handle the request to upload multiple files to the backend.
+  //  *
+  //  * @param fileList
+  //  */
+  // public uploadFileList(fileList: File[]): Observable<GenericWebResponse> {
+  //   const newFormData = new FormData();
+  //   fileList.forEach(file => {
+  //     newFormData.append('files', file, file.name);
+  //   });
 
-  /**
-   * This method will send a request to the backend
-   *  to remove the dictionary information stored
-   *  in the disk.
-   *
-   * @param dictID dictionary ID
-   */
-  public deleteUserDictionaryData(dictID: string): Observable<GenericWebResponse> {
-    return this.http.delete<GenericWebResponse>(`${environment.apiUrl}/${dictionaryUrl}/${dictID}`);
-  }
+  //   return this.http.post<GenericWebResponse>(`${environment.apiUrl}/${uploadFilesURL}`, newFormData);
+  // }
+
+  // /**
+  //  * This method will handle the request for uploading a File type
+  //  *  dictionary object.
+  //  *
+  //  * @param file
+  //  */
+  // public uploadDictionary(file: File): Observable<GenericWebResponse> {
+  //   const formData: FormData = new FormData();
+  //   formData.append('file', file, file.name);
+
+  //   return this.http.post<GenericWebResponse>(`${environment.apiUrl}/${uploadDictionaryUrl}`, formData);
+  // }
+
+  // /**
+  //  * This method will send a request to the backend
+  //  *  to remove the dictionary information stored
+  //  *  in the disk.
+  //  *
+  //  * @param dictID dictionary ID
+  //  */
+  // public deleteUserDictionaryData(dictID: string): Observable<GenericWebResponse> {
+  //   return this.http.delete<GenericWebResponse>(`${environment.apiUrl}/${dictionaryUrl}/${dictID}`);
+  // }
 
   private getDictionaryHttpRequest(userID: number): Observable<UserDictionary[]> {
     return this.http.get<UserDictionary[]>(`${environment.apiUrl}/${getDictionaryUrl}/${userID}`);
@@ -135,6 +150,17 @@ export class UserDictionaryService {
 
   private deleteDictionaryHttpRequest(dictID: number): Observable<GenericWebResponse> {
     return this.http.delete<GenericWebResponse>(`${environment.apiUrl}/${deleteDictionaryUrl}/${dictID}`);
+  }
+
+  private updateDictionaryHttpRequest(userDictionary: UserDictionary): Observable<GenericWebResponse> {
+    return this.http.post<GenericWebResponse>(`${environment.apiUrl}/${updateDictionaryUrl}`,
+    JSON.stringify(userDictionary),
+    {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json',
+      })
+    }
+    );
   }
 
 }

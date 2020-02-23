@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Useraccount extends TableImpl<UseraccountRecord> {
 
-    private static final long serialVersionUID = -278882883;
+    private static final long serialVersionUID = 169060741;
 
     /**
      * The reference instance of <code>texera.useraccount</code>
@@ -107,7 +107,7 @@ public class Useraccount extends TableImpl<UseraccountRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.USERACCOUNT_PRIMARY, Indexes.USERACCOUNT_USERNAME, Indexes.USERACCOUNT_USERNAME_2);
+        return Arrays.<Index>asList(Indexes.USERACCOUNT_PRIMARY, Indexes.USERACCOUNT_USERNAME);
     }
 
     @Override

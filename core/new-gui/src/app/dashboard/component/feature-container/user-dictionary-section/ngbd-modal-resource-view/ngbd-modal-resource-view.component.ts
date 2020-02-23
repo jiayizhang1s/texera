@@ -43,7 +43,7 @@ export class NgbdModalResourceViewComponent {
 
     if (this.ifAdd && this.name !== '') {
       this.dictionary.items.push(this.name);
-      this.userDictionaryService.putUserDictionaryData(this.dictionary).subscribe();
+      // this.userDictionaryService.putUserDictionaryData(this.dictionary).subscribe();
 
       this.name = '';
     }
@@ -59,7 +59,7 @@ export class NgbdModalResourceViewComponent {
   public remove(item: string): void {
 
     this.dictionary.items = this.dictionary.items.filter(dictItems => dictItems !== item);
-    this.userDictionaryService.putUserDictionaryData(this.dictionary).subscribe();
+    // this.userDictionaryService.putUserDictionaryData(this.dictionary).subscribe();
   }
 }
 

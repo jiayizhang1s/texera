@@ -5,6 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { UserDictionary } from '../../../service/user-dictionary/user-dictionary.interface';
 
 import { UserDictionaryService } from '../../../service/user-dictionary/user-dictionary.service';
+import { UserAccountService } from '../../../service/user-account/user-account.service';
 
 import { NgbdModalResourceAddComponent } from './ngbd-modal-resource-add/ngbd-modal-resource-add.component';
 import { NgbdModalResourceDeleteComponent } from './ngbd-modal-resource-delete/ngbd-modal-resource-delete.component';
@@ -36,28 +37,11 @@ export interface SavedAddDictionaryState extends Readonly<{
 })
 export class UserDictionarySectionComponent {
 
-  public userDictionaries: UserDictionary[] = [];
-
-  public savedState: SavedAddDictionaryState = {
-    name: '',
-    content: '',
-    separator: '',
-    description: '',
-    savedQueue: [],
-  };
-
   constructor(
     private userDictionaryService: UserDictionaryService,
+    private userAccountService: UserAccountService,
     private modalService: NgbModal
-  ) {
-    this.refreshUserDictionary();
-  }
-
-  public refreshUserDictionary(): void {
-    this.userDictionaryService.listUserDictionaries().subscribe(
-      value => this.userDictionaries = value,
-    );
-  }
+  ) { }
 
   /**
   * openNgbdModalResourceViewComponent triggers the view dictionary
@@ -71,12 +55,7 @@ export class UserDictionarySectionComponent {
   * @param dictionary: the dictionary that user wants to view
   */
   public openNgbdModalResourceViewComponent(dictionary: UserDictionary): void {
-    const modalRef = this.modalService.open(NgbdModalResourceViewComponent, {
-      beforeDismiss: () => {
-        this.refreshUserDictionary();
-        return true;
-      }
-    });
+    const modalRef = this.modalService.open(NgbdModalResourceViewComponent);
     modalRef.componentInstance.dictionary = cloneDeep(dictionary);
   }
 
@@ -107,15 +86,15 @@ export class UserDictionarySectionComponent {
     const modalRef = this.modalService.open(NgbdModalResourceDeleteComponent);
     modalRef.componentInstance.dictionary = cloneDeep(dictionary);
 
-    Observable.from(modalRef.result).subscribe(
-      (confirmDelete: boolean) => {
-        if (confirmDelete) {
-          this.userDictionaryService.deleteUserDictionaryData(dictionary.id).subscribe(res => {
-            this.refreshUserDictionary();
-          });
-        }
-      }
-    );
+    // Observable.from(modalRef.result).subscribe(
+    //   (confirmDelete: boolean) => {
+    //     if (confirmDelete) {
+    //       this.userDictionaryService.deleteUserDictionaryData(dictionary.id).subscribe(res => {
+    //         this.refreshUserDictionary();
+    //       });
+    //     }
+    //   }
+    // );
   }
 
   /**
@@ -124,11 +103,11 @@ export class UserDictionarySectionComponent {
   * @param
   */
   public ascSort(): void {
-    this.userDictionaries.sort((t1, t2) => {
-      if (t1.name.toLowerCase() > t2.name.toLowerCase()) { return 1; }
-      if (t1.name.toLowerCase() < t2.name.toLowerCase()) { return -1; }
-      return 0;
-    });
+    // this.userDictionaries.sort((t1, t2) => {
+    //   if (t1.name.toLowerCase() > t2.name.toLowerCase()) { return 1; }
+    //   if (t1.name.toLowerCase() < t2.name.toLowerCase()) { return -1; }
+    //   return 0;
+    // });
   }
 
   /**
@@ -137,11 +116,11 @@ export class UserDictionarySectionComponent {
   * @param
   */
   public dscSort(): void {
-    this.userDictionaries.sort((t1, t2) => {
-      if (t1.name.toLowerCase() > t2.name.toLowerCase()) { return -1; }
-      if (t1.name.toLowerCase() < t2.name.toLowerCase()) { return 1; }
-      return 0;
-    });
+    // this.userDictionaries.sort((t1, t2) => {
+    //   if (t1.name.toLowerCase() > t2.name.toLowerCase()) { return -1; }
+    //   if (t1.name.toLowerCase() < t2.name.toLowerCase()) { return 1; }
+    //   return 0;
+    // });
   }
 
   /**
@@ -150,11 +129,23 @@ export class UserDictionarySectionComponent {
   * @param
   */
   public sizeSort(): void {
-    this.userDictionaries.sort((t1, t2) => {
-      if (t1.items.length > t2.items.length) { return -1; }
-      if (t1.items.length < t2.items.length) { return 1; }
-      return 0;
-    });
+    // this.userDictionaries.sort((t1, t2) => {
+    //   if (t1.items.length > t2.items.length) { return -1; }
+    //   if (t1.items.length < t2.items.length) { return 1; }
+    //   return 0;
+    // });
+  }
+
+  public disableAddbutton(): boolean {
+    return !this.userAccountService.isLogin();
+  }
+
+  public getDictArray(): UserDictionary[] {
+    return this.userDictionaryService.getDictionaryArray();
+  }
+
+  public getDictArrayLength(): number {
+    return this.userDictionaryService.getDictionaryArrayLength();
   }
 
 }

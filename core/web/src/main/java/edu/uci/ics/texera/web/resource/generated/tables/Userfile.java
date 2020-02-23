@@ -20,7 +20,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row4;
+import org.jooq.Row6;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Userfile extends TableImpl<UserfileRecord> {
 
-    private static final long serialVersionUID = 789402843;
+    private static final long serialVersionUID = 234291556;
 
     /**
      * The reference instance of <code>texera.userfile</code>
@@ -68,14 +68,24 @@ public class Userfile extends TableImpl<UserfileRecord> {
     public final TableField<UserfileRecord, Double> FILEID = createField(DSL.name("fileID"), org.jooq.impl.SQLDataType.DOUBLE.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>texera.userfile.fileName</code>.
+     * The column <code>texera.userfile.size</code>.
      */
-    public final TableField<UserfileRecord, String> FILENAME = createField(DSL.name("fileName"), org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false), this, "");
+    public final TableField<UserfileRecord, Double> SIZE = createField(DSL.name("size"), org.jooq.impl.SQLDataType.DOUBLE.nullable(false), this, "");
 
     /**
-     * The column <code>texera.userfile.filePath</code>.
+     * The column <code>texera.userfile.name</code>.
      */
-    public final TableField<UserfileRecord, String> FILEPATH = createField(DSL.name("filePath"), org.jooq.impl.SQLDataType.VARCHAR(128).nullable(false), this, "");
+    public final TableField<UserfileRecord, String> NAME = createField(DSL.name("name"), org.jooq.impl.SQLDataType.VARCHAR(128).nullable(false), this, "");
+
+    /**
+     * The column <code>texera.userfile.path</code>.
+     */
+    public final TableField<UserfileRecord, String> PATH = createField(DSL.name("path"), org.jooq.impl.SQLDataType.VARCHAR(512).nullable(false), this, "");
+
+    /**
+     * The column <code>texera.userfile.description</code>.
+     */
+    public final TableField<UserfileRecord, String> DESCRIPTION = createField(DSL.name("description"), org.jooq.impl.SQLDataType.VARCHAR(512).nullable(false), this, "");
 
     /**
      * Create a <code>texera.userfile</code> table reference
@@ -132,7 +142,7 @@ public class Userfile extends TableImpl<UserfileRecord> {
 
     @Override
     public List<UniqueKey<UserfileRecord>> getKeys() {
-        return Arrays.<UniqueKey<UserfileRecord>>asList(Keys.KEY_USERFILE_PRIMARY);
+        return Arrays.<UniqueKey<UserfileRecord>>asList(Keys.KEY_USERFILE_USERID, Keys.KEY_USERFILE_PRIMARY);
     }
 
     @Override
@@ -171,11 +181,11 @@ public class Userfile extends TableImpl<UserfileRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Double, Double, String, String> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row6<Double, Double, Double, String, String, String> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }

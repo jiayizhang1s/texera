@@ -47,7 +47,9 @@ public class Keys {
 
     public static final UniqueKey<UseraccountRecord> KEY_USERACCOUNT_USERNAME = UniqueKeys0.KEY_USERACCOUNT_USERNAME;
     public static final UniqueKey<UseraccountRecord> KEY_USERACCOUNT_PRIMARY = UniqueKeys0.KEY_USERACCOUNT_PRIMARY;
+    public static final UniqueKey<UserdictRecord> KEY_USERDICT_USERID = UniqueKeys0.KEY_USERDICT_USERID;
     public static final UniqueKey<UserdictRecord> KEY_USERDICT_PRIMARY = UniqueKeys0.KEY_USERDICT_PRIMARY;
+    public static final UniqueKey<UserfileRecord> KEY_USERFILE_USERID = UniqueKeys0.KEY_USERFILE_USERID;
     public static final UniqueKey<UserfileRecord> KEY_USERFILE_PRIMARY = UniqueKeys0.KEY_USERFILE_PRIMARY;
 
     // -------------------------------------------------------------------------
@@ -70,7 +72,9 @@ public class Keys {
     private static class UniqueKeys0 {
         public static final UniqueKey<UseraccountRecord> KEY_USERACCOUNT_USERNAME = Internal.createUniqueKey(Useraccount.USERACCOUNT, "KEY_useraccount_userName", Useraccount.USERACCOUNT.USERNAME);
         public static final UniqueKey<UseraccountRecord> KEY_USERACCOUNT_PRIMARY = Internal.createUniqueKey(Useraccount.USERACCOUNT, "KEY_useraccount_PRIMARY", Useraccount.USERACCOUNT.USERID);
+        public static final UniqueKey<UserdictRecord> KEY_USERDICT_USERID = Internal.createUniqueKey(Userdict.USERDICT, "KEY_userdict_userID", Userdict.USERDICT.USERID, Userdict.USERDICT.NAME);
         public static final UniqueKey<UserdictRecord> KEY_USERDICT_PRIMARY = Internal.createUniqueKey(Userdict.USERDICT, "KEY_userdict_PRIMARY", Userdict.USERDICT.DICTID);
+        public static final UniqueKey<UserfileRecord> KEY_USERFILE_USERID = Internal.createUniqueKey(Userfile.USERFILE, "KEY_userfile_userID", Userfile.USERFILE.USERID, Userfile.USERFILE.NAME);
         public static final UniqueKey<UserfileRecord> KEY_USERFILE_PRIMARY = Internal.createUniqueKey(Userfile.USERFILE, "KEY_userfile_PRIMARY", Userfile.USERFILE.FILEID);
     }
 
