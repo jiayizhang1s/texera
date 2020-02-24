@@ -31,6 +31,10 @@ export class UserDictionaryService {
       this.detectUserChanges();
     }
 
+  /**
+   * retrieve the files from the backend and store in the user-file service.
+   * these file can be accessed by function {@link getDictionaryArray}.
+   */
   public refreshDictionary(): void {
     if (!this.userAccountService.isLogin()) {return; }
 
@@ -47,6 +51,10 @@ export class UserDictionaryService {
     );
   }
 
+  /**
+   * update the given dictionary in the backend and then refresh the dictionaries in the frontend
+   * @param userDictionary
+   */
   public updateDictionary(userDictionary: UserDictionary): void {
     this.updateDictionaryHttpRequest(userDictionary)
       .subscribe(
@@ -54,6 +62,12 @@ export class UserDictionaryService {
       );
   }
 
+  /**
+   * this function will return the dictionaryArray store in the service.
+   * This is required for HTML page since HTML can only loop through collection instead of index number.
+   * Be carefully with the return array because it may cause unexpected error.
+   * You can change the UserDictionary inside the array but do not change the array itself.
+   */
   public getDictionaryArray(): UserDictionary[] {
     return this.dictionaryArray;
   }
@@ -81,6 +95,9 @@ export class UserDictionaryService {
     );
   }
 
+  /**
+   * refresh the dictionaries in the service whenever the user changes.
+   */
   private detectUserChanges(): void {
     this.userAccountService.getUserChangeEvent().subscribe(
       () => {

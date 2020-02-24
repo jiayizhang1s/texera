@@ -1,4 +1,6 @@
-
+/**
+ * This interface stores the information about the users' dictionaries
+ */
 export interface UserDictionary {
   id: number;
   name: string;
@@ -6,12 +8,20 @@ export interface UserDictionary {
   description: string;
 }
 
+/**
+ * This interface stores the information about the users' dictionaries when uploading.
+ * These information is used to upload the dictionary files to the backend.
+ */
 export interface DictionaryUploadItem {
   file: File;
   name: string;
   description: string;
 }
 
+/**
+ * This interface stores the dictionary manually created by user
+ * These information is used to upload to the backend.
+ */
 export interface ManualDictionary {
   name: string;
   content: string;

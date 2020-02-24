@@ -39,7 +39,7 @@ export class NgbdModalResourceAddComponent {
   public haveDropZoneOver: boolean = false;
 
   // uploader is a data type introduced in ng2-uploader library, which can be used to capture files and store them
-  //  inside the uploader queue.
+  //  inside the uploader queue. The url parameter does not matter since we don't use it to upload.
   public uploader: FileUploader = new FileUploader({url: ''});
 
   public isInUploadFileTab: boolean = true;
@@ -91,9 +91,13 @@ export class NgbdModalResourceAddComponent {
   }
 
   public isUploadEnable(): boolean {
-    return this.userDictionaryUploadService.isUploadEnable();
+    return this.userDictionaryUploadService.isAllItemsValid();
   }
 
+  /**
+   * this method handles the event when user click on the file dropping area.
+   * @param clickUploadEvent
+   */
   public handleClickUploadFile(clickUploadEvent: {target: HTMLInputElement}): void {
     const fileList: FileList | null = clickUploadEvent.target.files;
     if (fileList === null) {
@@ -105,11 +109,17 @@ export class NgbdModalResourceAddComponent {
     }
   }
 
+  /**
+   * this method handles the event when user click the upload button in the upload part.
+   */
   public clickUploadDictionaryButton(): void {
     this.userDictionaryUploadService.uploadAllDictionary();
   }
 
-  public clickUploadManualDictioanryButton(): void {
+  /**
+   * this method handles the event when user click the upload button in the manual dictionary part.
+   */
+  public clickUploadManualDictionaryButton(): void {
     this.userDictionaryUploadService.uploadManualDictionary();
   }
 
@@ -140,6 +150,10 @@ export class NgbdModalResourceAddComponent {
     this.uploader.clearQueue();
   }
 
+  /**
+   * helper function to check if the input file is not null.
+   * @param file
+   */
   private isFile(file: File | null): file is File {
     return file != null;
   }

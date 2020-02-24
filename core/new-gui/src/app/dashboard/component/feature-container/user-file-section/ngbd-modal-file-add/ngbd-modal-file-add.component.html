@@ -22,7 +22,7 @@
   <div *ngIf="getFileArrayLength()">
     <li *ngFor="let fileUploadItem of getFileArray()" class="file-queue-item">
       <span>
-        <label>{{ fileUploadItem.getName() }}</label>
+        <label>{{ fileUploadItem.name }}</label>
       </span>
       <button class="queue-delete-button" (click)="deleteFile(fileUploadItem)">
         <i class="fa fa-trash" aria-hidden="true"></i>

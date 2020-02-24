@@ -24,131 +24,176 @@ export class UserDictionaryUploadService {
     private http: HttpClient
     ) {
       this.detectUserChanges();
-    }
+  }
 
-    public getDictionaryArray(): DictionaryUploadItem[] {
-      return this.dictionaryUploadItemArray;
-    }
+  /**
+   * this function will return the dictionaryArray store in the service.
+   * This is required for HTML page since HTML can only loop through collection instead of index number.
+   * Be carefully with the return array because it may cause unexpected error.
+   * You can change the DictionaryUploadItem inside the array but do not change the array itself.
+   */
+  public getDictionaryArray(): DictionaryUploadItem[] {
+    return this.dictionaryUploadItemArray;
+  }
 
-    public getDictionaryArrayLength(): number {
-      return this.dictionaryUploadItemArray.length;
-    }
+  public getDictionaryArrayLength(): number {
+    return this.dictionaryUploadItemArray.length;
+  }
 
-    public getDictionaryUploadItem(index: number): DictionaryUploadItem {
-      return this.dictionaryUploadItemArray[index];
-    }
+  /**
+   * return the DictionaryUploadItem at the index.
+   * check the array length by calling function {@link getDictionaryArrayLength}.
+   * @param index
+   */
+  public getDictionaryUploadItem(index: number): DictionaryUploadItem {
+    return this.dictionaryUploadItemArray[index];
+  }
 
-    public isManualDictionaryValid(): boolean {
-      return this.manualDictionary.name !== '' && this.manualDictionary.content !== '';
-    }
+  /**
+   * check if the manual dictionary inside the service is valid for uploading.
+   * eg. name and content is not empty.
+   */
+  public isManualDictionaryValid(): boolean {
+    return this.manualDictionary.name !== '' && this.manualDictionary.content !== '';
+  }
 
-    public isItemValid(dictionaryUploadItem: DictionaryUploadItem): boolean {
-      return dictionaryUploadItem.file.type.includes('text/plain') && this.isItemNameUnique(dictionaryUploadItem);
-    }
+  /**
+   * check if this item is valid for uploading.
+   * eg. the type is text and the name is unique
+   * @param dictionaryUploadItem
+   */
+  public isItemValid(dictionaryUploadItem: DictionaryUploadItem): boolean {
+    return dictionaryUploadItem.file.type.includes('text/plain') && this.isItemNameUnique(dictionaryUploadItem);
+  }
 
-    public isItemNameUnique(dictionaryUploadItem: DictionaryUploadItem): boolean {
-      return this.dictionaryUploadItemArray
-        .filter(item => item.name === dictionaryUploadItem.name)
-        .length === 1;
-    }
+  public isItemNameUnique(dictionaryUploadItem: DictionaryUploadItem): boolean {
+    return this.dictionaryUploadItemArray
+      .filter(item => item.name === dictionaryUploadItem.name)
+      .length === 1;
+  }
 
-    public isUploadEnable(): boolean {
-      return this.dictionaryUploadItemArray.every(
-        dictionaryUploadItem => this.isItemValid(dictionaryUploadItem)
-      );
-    }
+  /**
+   * check if all the item in the service is valid so that we can upload them.
+   */
+  public isAllItemsValid(): boolean {
+    return this.dictionaryUploadItemArray.every(
+      dictionaryUploadItem => this.isItemValid(dictionaryUploadItem)
+    );
+  }
 
-    public insertNewDictionary(file: File): void {
-      this.dictionaryUploadItemArray.push(this.createDictionaryUploadItem(file));
-    }
+  /**
+   * insert new file into the upload service.
+   * @param file
+   */
+  public insertNewDictionary(file: File): void {
+    this.dictionaryUploadItemArray.push(this.createDictionaryUploadItem(file));
+  }
 
-    public deleteDictionary(dictionaryUploadItem: DictionaryUploadItem): void {
-      this.dictionaryUploadItemArray = this.dictionaryUploadItemArray.filter(
-        dict => dict !== dictionaryUploadItem
-      );
-    }
+  public deleteDictionary(dictionaryUploadItem: DictionaryUploadItem): void {
+    this.dictionaryUploadItemArray = this.dictionaryUploadItemArray.filter(
+      dict => dict !== dictionaryUploadItem
+    );
+  }
 
-    public uploadAllDictionary() {
-      this.dictionaryUploadItemArray.forEach(
-        dictionaryUploadItem => this.uploadDictionary(dictionaryUploadItem).subscribe(
-          () => {
-            this.userDictionaryService.refreshDictionary();
-            this.deleteDictionary(dictionaryUploadItem);
-          }, error => {
-            // TODO
-            console.log(error);
-            alert(`Error encountered: ${error.status}\nMessage: ${error.message}`);
-          }
-        )
-      );
-    }
-
-    public uploadManualDictionary(): Observable<GenericWebResponse> {
-      if (!this.userAccountService.isLogin()) {throw new Error(`Can not upload manual dictionary when not login`); }
-      if (!this.isManualDictionaryValid) {throw new Error(`Can not upload invalid manual dictionary`); }
-
-      if (this.manualDictionary.separator === '') { this.manualDictionary.separator = ','; }
-      return this.putManualDictionaryHttpRequest(this.manualDictionary, this.userAccountService.getCurrentUserField('userID'));
-    }
-
-    private putManualDictionaryHttpRequest(manualDictionary: ManualDictionary, userID: number): Observable<GenericWebResponse> {
-      return this.http.put<GenericWebResponse>(
-        `${environment.apiUrl}/${putManualDictUrl}/${userID}`,
-        JSON.stringify(manualDictionary),
-        {
-          headers: new HttpHeaders({
-            'Content-Type':  'application/json',
-          })
-        }
-      );
-    }
-
-    private uploadDictionary(dictionaryUploadItem: DictionaryUploadItem): Observable<GenericWebResponse> {
-      if (!this.userAccountService.isLogin()) {
-        throw new Error(`Can not upload files when not login`);
-      }
-      const formData: FormData = new FormData();
-      formData.append('file', dictionaryUploadItem.file, dictionaryUploadItem.name);
-      formData.append('description', dictionaryUploadItem.description);
-      return this.postDictionaryHttpRequest(formData, this.userAccountService.getCurrentUserField('userID'));
-    }
-
-    private postDictionaryHttpRequest(formData: FormData, userID: number): Observable<GenericWebResponse> {
-      return this.http.post<GenericWebResponse>(
-        `${environment.apiUrl}/${postDictUrl}/${userID}`,
-        formData
-        );
-    }
-
-    private detectUserChanges(): void {
-      this.userAccountService.getUserChangeEvent().subscribe(
+  /**
+   * upload all the dictionaries in this service and then clear it.
+   * This method will automatically refresh the user-dictionary serivce when any dictionaries finish uploading.
+   * This method will not upload manual dictionary.
+   */
+  public uploadAllDictionary() {
+    this.dictionaryUploadItemArray.forEach(
+      dictionaryUploadItem => this.uploadDictionary(dictionaryUploadItem).subscribe(
         () => {
-          if (!this.userAccountService.isLogin()) {
-            this.clearUserDictionary();
-          }
+          this.userDictionaryService.refreshDictionary();
+          this.deleteDictionary(dictionaryUploadItem);
+        }, error => {
+          // TODO: user friendly error message.
+          console.log(error);
+          alert(`Error encountered: ${error.status}\nMessage: ${error.message}`);
         }
+      )
+    );
+  }
+
+  /**
+   * upload the manual dictionary to the backend.
+   * This method will automatically refresh the user-dictionary service when succeed.
+   */
+  public uploadManualDictionary(): Observable<GenericWebResponse> {
+    if (!this.userAccountService.isLogin()) {throw new Error(`Can not upload manual dictionary when not login`); }
+    if (!this.isManualDictionaryValid) {throw new Error(`Can not upload invalid manual dictionary`); }
+
+    if (this.manualDictionary.separator === '') { this.manualDictionary.separator = ','; }
+    return this.putManualDictionaryHttpRequest(this.manualDictionary, this.userAccountService.getCurrentUserField('userID'));
+  }
+
+  private putManualDictionaryHttpRequest(manualDictionary: ManualDictionary, userID: number): Observable<GenericWebResponse> {
+    return this.http.put<GenericWebResponse>(
+      `${environment.apiUrl}/${putManualDictUrl}/${userID}`,
+      JSON.stringify(manualDictionary),
+      {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+        })
+      }
+    );
+  }
+
+  /**
+   * helper function for the {@link uploadAllDictionary}.
+   * It will pack the dictionaryUploadItem into formData and upload it to the backend.
+   * @param dictionaryUploadItem
+   */
+  private uploadDictionary(dictionaryUploadItem: DictionaryUploadItem): Observable<GenericWebResponse> {
+    if (!this.userAccountService.isLogin()) {
+      throw new Error(`Can not upload files when not login`);
+    }
+    const formData: FormData = new FormData();
+    formData.append('file', dictionaryUploadItem.file, dictionaryUploadItem.name);
+    formData.append('description', dictionaryUploadItem.description);
+    return this.postDictionaryHttpRequest(formData, this.userAccountService.getCurrentUserField('userID'));
+  }
+
+  private postDictionaryHttpRequest(formData: FormData, userID: number): Observable<GenericWebResponse> {
+    return this.http.post<GenericWebResponse>(
+      `${environment.apiUrl}/${postDictUrl}/${userID}`,
+      formData
       );
-    }
+  }
 
-    private clearUserDictionary(): void {
-      this.dictionaryUploadItemArray = [];
-      this.manualDictionary = this.createEmptyManualDictionary();
-    }
 
-    private createEmptyManualDictionary(): ManualDictionary {
-      return {
-        name : '',
-        content: '',
-        separator: '',
-        description: ''
-      };
-    }
+  /**
+   * clear the dictionaries in the service when user log out.
+   */
+  private detectUserChanges(): void {
+    this.userAccountService.getUserChangeEvent().subscribe(
+      () => {
+        if (!this.userAccountService.isLogin()) {
+          this.clearUserDictionary();
+        }
+      }
+    );
+  }
 
-    private createDictionaryUploadItem(file: File): DictionaryUploadItem {
-      return {
-        file : file,
-        name: file.name,
-        description: ''
-      };
-    }
+  private clearUserDictionary(): void {
+    this.dictionaryUploadItemArray = [];
+    this.manualDictionary = this.createEmptyManualDictionary();
+  }
+
+  private createEmptyManualDictionary(): ManualDictionary {
+    return {
+      name : '',
+      content: '',
+      separator: '',
+      description: ''
+    };
+  }
+
+  private createDictionaryUploadItem(file: File): DictionaryUploadItem {
+    return {
+      file : file,
+      name: file.name,
+      description: ''
+    };
+  }
 }

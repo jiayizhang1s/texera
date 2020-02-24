@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FileUploader } from 'ng2-file-upload';
 import { UserFileUploadService } from '../../../../service/user-file/user-file-upload.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { FileUploadItem } from '../../../../type/file-upload-item';
+import { FileUploadItem } from '../../../../type/user-file';
 
 @Component({
   selector: 'texera-ngbd-modal-file-add',

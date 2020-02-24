@@ -12,15 +12,6 @@ import { NgbdModalResourceDeleteComponent } from './ngbd-modal-resource-delete/n
 import { NgbdModalResourceViewComponent } from './ngbd-modal-resource-view/ngbd-modal-resource-view.component';
 
 import { cloneDeep } from 'lodash';
-import { FileItem } from 'ng2-file-upload';
-
-export interface SavedAddDictionaryState extends Readonly<{
-  name: string;
-  content: string;
-  separator: string;
-  description: string;
-  savedQueue: FileItem[];
-}> { }
 
 /**
  * UserDictionarySectionComponent is the main interface
@@ -41,7 +32,9 @@ export class UserDictionarySectionComponent {
     private userDictionaryService: UserDictionaryService,
     private userAccountService: UserAccountService,
     private modalService: NgbModal
-  ) { }
+  ) {
+    this.userDictionaryService.refreshDictionary();
+  }
 
   /**
   * openNgbdModalResourceViewComponent triggers the view dictionary
@@ -94,6 +87,12 @@ export class UserDictionarySectionComponent {
       }
     );
   }
+
+  /**
+   * TODO: the sorting function below is disabled due to the huge structural change in the dashboard
+   * These methods haven't been changed after that, and thus they won't work.
+   * The buttons are kept for future recovery.
+   */
 
   /**
   * sort the dictionary by name in ascending order

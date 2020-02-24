@@ -16,7 +16,9 @@ export class UserFileSectionComponent implements OnInit {
     private modalService: NgbModal,
     private userFileService: UserFileService,
     private userAccountService: UserAccountService
-    ) { }
+    ) {
+      this.userFileService.refreshFiles();
+    }
 
   ngOnInit() {
   }
@@ -39,6 +41,10 @@ export class UserFileSectionComponent implements OnInit {
 
   public disableAddButton(): boolean {
     return !this.userAccountService.isLogin();
+  }
+
+  public addFileSizeUnit(fileSize: number): string {
+    return this.userFileService.addFileSizeUnit(fileSize);
   }
 
 }

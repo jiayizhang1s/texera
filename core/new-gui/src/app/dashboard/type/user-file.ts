@@ -7,8 +7,13 @@ export interface UserFile extends Readonly<{
   name: string;
   path: string;
   description: string;
+  size: number;
 }> {}
 
+/**
+ * This interface stores the information about the users' files when uploading.
+ * These information is used to upload the file to the backend.
+ */
 export interface FileUploadItem {
   file: File;
   name: string;

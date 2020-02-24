@@ -15,9 +15,12 @@
         <div class="scroll">
           <mat-list-item *ngFor="let userFile of getFileArray()" class="user-dictionary-list-item">
             <div class="section-for-tip" placement="bottom">
-              <p font-size=10px><span class="dict-name">
+              <p font-size=20px><span class="dict-name">
                   {{userFile.name}}</span>
               </p>
+              <p font-size=10px><span class="dict-name">
+                {{addFileSizeUnit(userFile.size)}}</span>
+            </p>
             </div>
             <span class="gap-filler"></span>
             <button mat-button class="delete-project-btn" placement="bottom" ngbTooltip="Delete the {{userFile.name}}"
