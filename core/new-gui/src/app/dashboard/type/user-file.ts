@@ -1,6 +1,7 @@
 /**
  * This interface stores the information about the users' files.
  * These information is used to locate the file for the operators.
+ * Corresponds to `/web/src/main/java/edu/uci/ics/texera/web/resource/UserFileResource.java`
  */
 export interface UserFile extends Readonly<{
   id: number;

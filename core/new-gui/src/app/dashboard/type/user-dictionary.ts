@@ -1,5 +1,6 @@
 /**
  * This interface stores the information about the users' dictionaries
+ * Corresponds to `/web/src/main/java/edu/uci/ics/texera/web/resource/UserDictionaryResource.java`
  */
 export interface UserDictionary {
   id: number;
@@ -21,6 +22,7 @@ export interface DictionaryUploadItem {
 /**
  * This interface stores the dictionary manually created by user
  * These information is used to upload to the backend.
+ * Corresponds to `/web/src/main/java/edu/uci/ics/texera/web/resource/UserDictionaryResource.java`
  */
 export interface ManualDictionary {
   name: string;

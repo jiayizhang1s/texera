@@ -51,6 +51,10 @@ import edu.uci.ics.texera.web.response.GenericWebResponse;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class UserDictionaryResource {
+    
+    /**
+     * Corresponds to `src/app/dashboard/type/user-dictionary.ts`
+     */
     public static class UserDictionary {
         public double id;
         public String name;
@@ -66,7 +70,10 @@ public class UserDictionaryResource {
             this.description = description;
         }
     }
-        
+    
+    /**
+     * Corresponds to `src/app/dashboard/type/user-dictionary.ts`
+     */
     public static class UserManualDictionary {
         public String name;
         public String content;
@@ -269,19 +276,30 @@ public class UserDictionaryResource {
         }
     }
     
+    /**
+     * write the whole list into the byte array.
+     * @param list
+     * @return
+     */
     private byte[] convertListToByteArray(List<String> list) {
             try(
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    ObjectOutputStream objOstream = new ObjectOutputStream(baos)){
-                    
-                    objOstream.writeObject(list);
-                    return baos.toByteArray();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ObjectOutputStream objOstream = new ObjectOutputStream(baos))
+            {
+                objOstream.writeObject(list);
+                return baos.toByteArray();
             }
             catch (Exception e){
                 throw new TexeraWebException("Error when converting list of dictionary items into byte array");
             }
     }
     
+    /**
+     * convert the input byte array to the list of string
+     * the result list is converted back from byte array so it is unchecked.
+     * @param content
+     * @return
+     */
     @SuppressWarnings("unchecked")
     private List<String> convertContentToList(byte[] content) {
         try(

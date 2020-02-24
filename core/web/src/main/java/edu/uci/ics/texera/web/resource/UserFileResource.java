@@ -42,6 +42,9 @@ import edu.uci.ics.texera.dataflow.resource.file.FileManager;
 @Produces(MediaType.APPLICATION_JSON)
 public class UserFileResource {
     
+    /**
+     * Corresponds to `src/app/dashboard/type/user-file.ts`
+     */
     public static class UserFile {
         public double id;
         public String name;
