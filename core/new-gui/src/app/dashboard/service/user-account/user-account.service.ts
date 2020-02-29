@@ -8,8 +8,8 @@ import { observable } from 'rxjs';
 import { UserAccount } from '../../type/user-account';
 import { UserAccountResponse } from '../../type/user-account';
 
-const registerURL = 'users/accounts/register';
-const loginURL = 'users/accounts/login';
+export const registerURL = 'users/accounts/register';
+export const loginURL = 'users/accounts/login';
 
 /**
  * User Account Service contains the function of registering and logging the user.
@@ -35,7 +35,7 @@ export class UserAccountService {
     if (this.isLogin()) {throw new Error('Already logged in when register.'); }
     if (!this.checkUserAuthorizationLegal(userName)) {throw new Error(`userName ${userName} is illegal`); }
 
-    return this.register(userName).map(
+    return this.registerHttpRequest(userName).map(
       res => {
         if (res.code === 0) {
           this.changeUser(res.userAccount, res.code);
@@ -56,7 +56,7 @@ export class UserAccountService {
     if (this.isLogin()) {throw new Error('Already logged in when login in.'); }
     if (!this.checkUserAuthorizationLegal(userName)) {throw new Error(`userName ${userName} is illegal`); }
 
-    return this.login(userName).map(
+    return this.loginHttpRequest(userName).map(
       res => {
         if (res.code === 0) {
           this.changeUser(res.userAccount, res.code);
@@ -82,11 +82,22 @@ export class UserAccountService {
     return this.isLoginFlag;
   }
 
+  public getUserID(): number {
+    if (!this.isLogin()) {throw new Error('User is not login yet'); }
+    return this.getCurrentUserField('userID');
+  }
+
+  public getUserName(): string {
+    if (!this.isLogin()) {throw new Error('User is not login yet'); }
+    return this.getCurrentUserField('userName');
+  }
+
   /**
    * this method will return the fields inside the current user
    * @param field the field name of the {@link UserAccount}, should be string
    */
   public getCurrentUserField<Field extends keyof UserAccount>(field: Field): UserAccount[Field] {
+    if (!this.isLogin()) {throw new Error('User is not login yet'); }
     return this.currentUser[field];
   }
 
@@ -102,7 +113,7 @@ export class UserAccountService {
    * construct the request body as formData and create http request
    * @param userName
    */
-  private register(userName: string): Observable<UserAccountResponse> {
+  private registerHttpRequest(userName: string): Observable<UserAccountResponse> {
     const formData: FormData = new FormData();
     formData.append('userName', userName);
     return this.http.post<UserAccountResponse>(`${environment.apiUrl}/${registerURL}`, formData);
@@ -112,7 +123,7 @@ export class UserAccountService {
    * construct the request body as formData and create http request
    * @param userName
    */
-  private login(userName: string): Observable<UserAccountResponse> {
+  private loginHttpRequest(userName: string): Observable<UserAccountResponse> {
     const formData: FormData = new FormData();
     formData.append('userName', userName);
     return this.http.post<UserAccountResponse>(`${environment.apiUrl}/${loginURL}`, formData);
