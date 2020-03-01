@@ -7,8 +7,8 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { GenericWebResponse } from '../../type/generic-web-response';
 
-const getFilesUrl = 'users/files/get-files';
-const deleteFilesUrl = 'users/files/delete-file';
+export const getFilesUrl = 'users/files/get-files';
+export const deleteFilesUrl = 'users/files/delete-file';
 
 @Injectable()
 export class UserFileService {
@@ -47,6 +47,7 @@ export class UserFileService {
    * @param index
    */
   public getFileField<Field extends keyof UserFile>(index: number, field: Field): UserFile[Field] {
+    if (index >= this.getFileArrayLength()) { throw new Error('index out of bound'); }
     return this.getFile(index)[field];
   }
 
@@ -71,10 +72,11 @@ export class UserFileService {
     if (!this.userAccountService.isLogin()) {return; }
 
     this.getFilesHttpRequest(
-      this.userAccountService.getCurrentUserField('userID')
+      this.userAccountService.getUserID()
       ).subscribe(
-      files => {this.fileArray = files;
-      this.fileChangeEvent.emit('');
+      files => {
+        this.fileArray = files;
+        this.fileChangeEvent.emit('');
       }
     );
   }

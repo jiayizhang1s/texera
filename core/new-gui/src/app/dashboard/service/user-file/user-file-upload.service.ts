@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { UserFileService } from './user-file.service';
 
-const postFileUrl = 'users/files/upload-file';
+export const postFileUrl = 'users/files/upload-file';
 
 @Injectable()
 export class UserFileUploadService {
@@ -49,6 +49,7 @@ export class UserFileUploadService {
    * @param index
    */
   public getFileUploadItem(index: number): FileUploadItem {
+    if (index >= this.getFileArrayLength()) { throw new Error('index out of bound'); }
     return this.fileUploadItemArray[index];
   }
 
@@ -60,9 +61,9 @@ export class UserFileUploadService {
 
   /**
    * upload all the files in this service and then clear it.
-   * This method will automatically refresh the user-file serivce when any files finish uploading.
+   * This method will automatically refresh the user-file service when any files finish uploading.
    */
-  public uploadAllFiles() {
+  public uploadAllFiles(): void {
     this.fileUploadItemArray.forEach(
       fileUploadItem => this.uploadFile(fileUploadItem).subscribe(
         () => {
