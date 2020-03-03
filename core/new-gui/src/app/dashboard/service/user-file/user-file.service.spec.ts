@@ -50,6 +50,7 @@ describe('UserFileService', () => {
     (service: UserFileService, userAccountService: UserAccountService, httpMock: HttpTestingController) => {
     expect(service.getFileArrayLength()).toBe(0);
 
+    spyOn(service, 'refreshFiles');
     expect(service.refreshFiles).toHaveBeenCalled().then(
       () => {
         expect(service.getFileArrayLength()).toEqual(1);

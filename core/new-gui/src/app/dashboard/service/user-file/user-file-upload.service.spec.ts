@@ -5,7 +5,7 @@ import { UserFileService } from './user-file.service';
 import { StubUserFileService } from './stub-user-file.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { UserAccountService } from '../user-account/user-account.service';
-import { StubUserAccountService } from '../user-account/Stub-user-account.service';
+import { StubUserAccountService } from '../user-account/stub-user-account.service';
 
 const arrayOfBlob: Blob[] = Array<Blob>(); // just for test,needed for creating File object.
 const testFileName = 'testTextFile';
@@ -65,6 +65,7 @@ describe('UserFileUploadService', () => {
     expect(service.getFileArrayLength).toBe(1);
     service.uploadAllFiles();
 
+    spyOn(userFileService, 'refreshFiles');
     expect(userFileService.refreshFiles).toHaveBeenCalled().then(
       () => expect(service.getFileArrayLength()).toBe(0)
     );
