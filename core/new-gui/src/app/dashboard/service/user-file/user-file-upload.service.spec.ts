@@ -34,34 +34,34 @@ describe('UserFileUploadService', () => {
     expect(service).toBeTruthy();
   }));
 
-  // it('should include no file by default', inject([UserFileUploadService, UserAccountService, UserFileService, HttpTestingController],
-  //   (service: UserFileUploadService, userAccountService: UserAccountService) => {
-  //   userAccountService.loginUser('');
-  //   expect(service.getFileArrayLength()).toBe(0);
-  //   expect(() => service.getFileUploadItem(0)).toThrowError();
-  // }));
+  it('should contain no file by default', inject([UserFileUploadService, UserAccountService, UserFileService, HttpTestingController],
+    (service: UserFileUploadService, userAccountService: UserAccountService) => {
+    userAccountService.loginUser('').subscribe();
+    expect(service.getFileArrayLength()).toBe(0);
+    expect(() => service.getFileUploadItem(0)).toThrowError();
+  }));
 
-  // it('should insert file successfully', inject([UserFileUploadService, UserAccountService, UserFileService, HttpTestingController],
-  //   (service: UserFileUploadService, userAccountService: UserAccountService) => {
-  //   userAccountService.loginUser('');
-  //   service.insertNewFile(testFile);
-  //   expect(service.getFileArrayLength()).toBe(1);
-  //   expect(service.getFileArray()[0]).toEqual(service.getFileUploadItem(0));
-  //   expect(service.getFileUploadItem(0).file).toEqual(testFile);
-  //   expect(service.getFileUploadItem(0).name).toEqual(testFileName);
-  //   expect(service.getFileUploadItem(0).isUploadingFlag).toBeFalsy();
-  //   expect(() => service.getFileUploadItem(1)).toThrowError();
-  // }));
+  it('should insert file successfully', inject([UserFileUploadService, UserAccountService, UserFileService, HttpTestingController],
+    (service: UserFileUploadService, userAccountService: UserAccountService) => {
+    userAccountService.loginUser('').subscribe();
+    service.insertNewFile(testFile);
+    expect(service.getFileArrayLength()).toBe(1);
+    expect(service.getFileArray()[0]).toEqual(service.getFileUploadItem(0));
+    expect(service.getFileUploadItem(0).file).toEqual(testFile);
+    expect(service.getFileUploadItem(0).name).toEqual(testFileName);
+    expect(service.getFileUploadItem(0).isUploadingFlag).toBeFalsy();
+    expect(() => service.getFileUploadItem(1)).toThrowError();
+  }));
 
-  // it('should delete file successfully', inject([UserFileUploadService, UserAccountService, UserFileService, HttpTestingController],
-  //   (service: UserFileUploadService, userAccountService: UserAccountService) => {
-  //   userAccountService.loginUser('');
-  //   service.insertNewFile(testFile);
-  //   expect(service.getFileArrayLength()).toBe(1);
-  //   const testFileUploadItem = service.getFileUploadItem(0);
-  //   service.deleteFile(testFileUploadItem);
-  //   expect(service.getFileArrayLength()).toBe(0);
-  // }));
+  it('should delete file successfully', inject([UserFileUploadService, UserAccountService, UserFileService, HttpTestingController],
+    (service: UserFileUploadService, userAccountService: UserAccountService) => {
+    userAccountService.loginUser('').subscribe();
+    service.insertNewFile(testFile);
+    expect(service.getFileArrayLength()).toBe(1);
+    const testFileUploadItem = service.getFileUploadItem(0);
+    service.deleteFile(testFileUploadItem);
+    expect(service.getFileArrayLength()).toBe(0);
+  }));
 
   // it('should upload file successfully', inject([UserFileUploadService, UserAccountService, UserFileService, HttpTestingController],
   //   (service: UserFileUploadService, userAccountService: UserAccountService, userFileService: UserFileService, httpMock: HttpTestingController) => {

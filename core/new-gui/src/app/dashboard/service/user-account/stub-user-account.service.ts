@@ -10,6 +10,7 @@ import { UserAccountResponse } from '../../type/user-account';
 import { UserAccountService } from './user-account.service';
 
 export const stubUserID = 1;
+export const stubUserName = 'testUser';
 
 @Injectable()
 export class StubUserAccountService extends UserAccountService {
@@ -26,29 +27,46 @@ export class StubUserAccountService extends UserAccountService {
 
   public registerUser(userName: string): Observable<UserAccountResponse> {
     this.stubIsLoginFlag = true;
-    this.stubUserChangeEvent.emit();
-    return Observable.create(
+    this.stubUserChangeEvent.emit({
+      userName: stubUserName,
+      userID: stubUserID
+    });
+    return Observable.of(
       {
         code: 0,
-        message: ''
+        message: '',
+        userAccount: {
+          userName: stubUserName,
+          userID: stubUserID
+        }
     }
     );
   }
 
   public loginUser(userName: string):  Observable<UserAccountResponse> {
     this.stubIsLoginFlag = true;
-    this.stubUserChangeEvent.emit();
-    return Observable.create(
+    this.stubUserChangeEvent.emit({
+      userName: stubUserName,
+      userID: stubUserID
+    });
+    return Observable.of(
       {
         code: 0,
-        message: ''
+        message: '',
+        userAccount: {
+          userName: stubUserName,
+          userID: stubUserID
+        }
     }
     );
   }
 
   public logOut(): void {
     this.stubIsLoginFlag = false;
-    this.stubUserChangeEvent.emit();
+    this.stubUserChangeEvent.emit({
+      userName: '',
+      userID: -1
+    });
   }
 
   public isLogin(): boolean {

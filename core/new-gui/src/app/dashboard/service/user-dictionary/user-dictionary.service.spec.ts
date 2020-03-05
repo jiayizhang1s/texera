@@ -6,31 +6,32 @@ import { Observable } from 'rxjs/Observable';
 import { HttpClient } from '@angular/common/http';
 import { marbles} from 'rxjs-marbles';
 import { UserAccountService } from '../user-account/user-account.service';
-
-class StubHttpClient {
-  constructor() { }
-
-  public post(): Observable<string> { return Observable.of('a'); }
-  public get(): Observable<string> { return Observable.of('a'); }
-}
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
 describe('UserDictionaryService', () => {
-
-  let service: UserDictionaryService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         UserAccountService,
         UserDictionaryService,
-        { provide: HttpClient, useClass: StubHttpClient }
+      ],
+      imports: [
+        HttpClientTestingModule
       ]
     });
-
-    service = TestBed.get(UserDictionaryService);
   });
 
-  // it('should be created', inject([UserDictionaryService], (InjectableService: UserDictionaryService) => {
-  //   expect(InjectableService).toBeTruthy();
-  // }));
+  afterEach(inject([HttpTestingController], (httpMock: HttpTestingController) => {
+    httpMock.verify();
+  }));
+
+  it('should be created', inject([UserDictionaryService], (InjectableService: UserDictionaryService) => {
+    expect(InjectableService).toBeTruthy();
+  }));
+
+  it('should contain no files by default', inject([UserDictionaryService, UserAccountService, HttpTestingController],
+    (service: UserDictionaryService) => {
+    expect(service.getDictionaryArrayLength()).toBe(0);
+  }));
 });

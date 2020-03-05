@@ -46,6 +46,7 @@ export class UserDictionaryUploadService {
    * @param index
    */
   public getDictionaryUploadItem(index: number): DictionaryUploadItem {
+    if (index >= this.getDictionaryArrayLength()) {throw new Error('Index out of bound'); }
     return this.dictionaryUploadItemArray[index];
   }
 

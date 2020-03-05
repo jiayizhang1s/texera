@@ -58,7 +58,7 @@ export class UserFileService {
   /**
    * get the file change event so that you can subscribe to it.
    * When the file changes in the service, the return value will emit new message.
-   * TODO: hasn't been implemented
+   * TODO: hasn't been implemented because it hasn't been used anywhere yet, not sure if it is needed
    */
   public getFileChangeEvent(): EventEmitter<string> {
     return this.fileChangeEvent;

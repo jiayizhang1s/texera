@@ -41,17 +41,38 @@ describe('UserFileService', () => {
     expect(service).toBeTruthy();
   }));
 
-  // it('should contain no files by default', inject([UserFileService, UserAccountService, HttpTestingController],
-  //   (service: UserFileService) => {
+  it('should contain no files by default', inject([UserFileService, UserAccountService, HttpTestingController],
+    (service: UserFileService) => {
+    expect(service.getFileArrayLength()).toBe(0);
+    expect(() => service.getFileField(0, 'id')).toThrowError();
+  }));
+
+  // it('should refresh file after user login', inject([UserFileService, UserAccountService, HttpTestingController],
+  //   (service: UserFileService, userAccountService: UserAccountService, httpMock: HttpTestingController) => {
   //   expect(service.getFileArrayLength()).toBe(0);
-  //   expect(() => service.getFileField(0, 'id')).toThrowError();
+  //   spyOn(service, 'refreshFiles').and.callThrough();
+  //   expect(service.refreshFiles).toHaveBeenCalled();
+
+  //   userAccountService.loginUser('').subscribe();
+
+  //       // expect(service.getFileArrayLength()).toEqual(1);
+  //       // expect(service.getFileArray()[0]).toEqual(testFile);
+  //       // expect(service.getFileField(0, 'id')).toEqual(id);
+  //       // expect(service.getFileField(0, 'name')).toEqual(name);
+  //       // expect(service.getFileField(0, 'path')).toEqual(path);
+  //       // expect(service.getFileField(0, 'description')).toEqual(description);
+  //       // expect(service.getFileField(0, 'size')).toEqual(size);
+
+  //   const req = httpMock.expectOne(`${environment.apiUrl}/${getFilesUrl}/${id}`);
+  //   expect(req.request.method).toEqual('GET');
+  //   req.flush([testFile]);
   // }));
 
-  // it('should refresh file when user login', inject([UserFileService, UserAccountService, HttpTestingController],
+  // it('should refresh file after user login', inject([UserFileService, UserAccountService, HttpTestingController],
   //   (service: UserFileService, userAccountService: UserAccountService, httpMock: HttpTestingController) => {
   //   expect(service.getFileArrayLength()).toBe(0);
 
-  //   spyOn(service, 'refreshFiles');
+  //   spyOn(service, 'refreshFiles').and.callThrough();
   //   expect(service.refreshFiles).toHaveBeenCalled();
   //   // .then(
   //     // () => {
@@ -65,7 +86,7 @@ describe('UserFileService', () => {
   //     // }
   //   // );
 
-  //   userAccountService.loginUser('');
+  //   userAccountService.loginUser('').subscribe();
 
   //   const req = httpMock.expectOne(`${environment.apiUrl}/${getFilesUrl}/${id}`);
   //   expect(req.request.method).toEqual('GET');
