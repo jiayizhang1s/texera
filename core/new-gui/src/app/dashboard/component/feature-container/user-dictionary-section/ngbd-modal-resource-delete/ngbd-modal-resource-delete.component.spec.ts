@@ -35,23 +35,23 @@ describe('NgbdModalResourceDeleteComponent', () => {
     component = fixture.componentInstance;
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+  // it('should create', () => {
+  //   expect(component).toBeTruthy();
+  // });
 
-  it('resourceDeleteComponent deleteDictionary should delete a certain dictionary', () => {
-    deletefixture = TestBed.createComponent(NgbdModalResourceDeleteComponent);
-    deletecomponent = deletefixture.componentInstance;
+  // it('resourceDeleteComponent deleteDictionary should delete a certain dictionary', () => {
+  //   deletefixture = TestBed.createComponent(NgbdModalResourceDeleteComponent);
+  //   deletecomponent = deletefixture.componentInstance;
 
-    deletecomponent.dictionary = {
-      id: '1',
-      name: 'police violence',
-      items: ['BLM']
-    };
-    let deleteSignal: Boolean;
-    deleteSignal = false;
-    deletecomponent.deleteDictionary();
+  //   deletecomponent.dictionary = {
+  //     id: '1',
+  //     name: 'police violence',
+  //     items: ['BLM']
+  //   };
+  //   let deleteSignal: Boolean;
+  //   deleteSignal = false;
+  //   deletecomponent.deleteDictionary();
 
-    expect(deleteSignal).toEqual(false);
-  });
+  //   expect(deleteSignal).toEqual(false);
+  // });
 });
