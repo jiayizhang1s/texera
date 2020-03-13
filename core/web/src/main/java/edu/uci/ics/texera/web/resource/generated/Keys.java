@@ -17,6 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.UniqueKey;
 import org.jooq.impl.Internal;
+import org.jooq.types.UInteger;
 
 
 /**
@@ -37,9 +38,9 @@ public class Keys {
     // IDENTITY definitions
     // -------------------------------------------------------------------------
 
-    public static final Identity<UseraccountRecord, Double> IDENTITY_USERACCOUNT = Identities0.IDENTITY_USERACCOUNT;
-    public static final Identity<UserdictRecord, Double> IDENTITY_USERDICT = Identities0.IDENTITY_USERDICT;
-    public static final Identity<UserfileRecord, Double> IDENTITY_USERFILE = Identities0.IDENTITY_USERFILE;
+    public static final Identity<UseraccountRecord, UInteger> IDENTITY_USERACCOUNT = Identities0.IDENTITY_USERACCOUNT;
+    public static final Identity<UserdictRecord, UInteger> IDENTITY_USERDICT = Identities0.IDENTITY_USERDICT;
+    public static final Identity<UserfileRecord, UInteger> IDENTITY_USERFILE = Identities0.IDENTITY_USERFILE;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -64,9 +65,9 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 {
-        public static Identity<UseraccountRecord, Double> IDENTITY_USERACCOUNT = Internal.createIdentity(Useraccount.USERACCOUNT, Useraccount.USERACCOUNT.USERID);
-        public static Identity<UserdictRecord, Double> IDENTITY_USERDICT = Internal.createIdentity(Userdict.USERDICT, Userdict.USERDICT.DICTID);
-        public static Identity<UserfileRecord, Double> IDENTITY_USERFILE = Internal.createIdentity(Userfile.USERFILE, Userfile.USERFILE.FILEID);
+        public static Identity<UseraccountRecord, UInteger> IDENTITY_USERACCOUNT = Internal.createIdentity(Useraccount.USERACCOUNT, Useraccount.USERACCOUNT.USERID);
+        public static Identity<UserdictRecord, UInteger> IDENTITY_USERDICT = Internal.createIdentity(Userdict.USERDICT, Userdict.USERDICT.DICTID);
+        public static Identity<UserfileRecord, UInteger> IDENTITY_USERFILE = Internal.createIdentity(Userfile.USERFILE, Userfile.USERFILE.FILEID);
     }
 
     private static class UniqueKeys0 {

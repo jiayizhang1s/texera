@@ -98,6 +98,8 @@ export class UserFileService {
    * @param fileSize
    */
   public addFileSizeUnit(fileSize: number): string {
+    if (fileSize < 1024) { return fileSize + ' Byte'; }
+
     let i = 0;
     const byteUnits = [' Byte', ' KB', ' MB', ' GB', ' TB', ' PB', ' EB', ' ZB', ' YB'];
     while (fileSize > 1024 && i < byteUnits.length - 1) {

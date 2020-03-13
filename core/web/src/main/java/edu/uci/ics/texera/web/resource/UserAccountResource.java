@@ -20,6 +20,7 @@ import org.jooq.Result;
 import org.jooq.SQLDialect;
 import org.jooq.Select;
 import org.jooq.impl.DSL;
+import org.jooq.types.UInteger;
 
 import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
@@ -45,13 +46,13 @@ public class UserAccountResource {
      */
     public static class UserAccount {
         public String userName;
-        public double userID;
+        public UInteger userID; // the ID in MySQL database is unsigned int
         
         public static UserAccount generateErrorAccount() {
-            return new UserAccount("", -1);
+            return new UserAccount("", UInteger.valueOf(0));
         }
-
-        public UserAccount(String userName, double userID) {
+        
+        public UserAccount(String userName, UInteger userID) {
             this.userName = userName;
             this.userID = userID;
         }
@@ -89,7 +90,7 @@ public class UserAccountResource {
         }
 
         Condition loginCondition = USERACCOUNT.USERNAME.equal(userName);
-        Record1<Double> result = getUserID(loginCondition);
+        Record1<UInteger> result = getUserID(loginCondition);
 
         if (result == null) { // not found
             return UserAccountResponse.generateErrorResponse("The username or password is incorrect");
@@ -112,7 +113,7 @@ public class UserAccountResource {
         }
         
         Condition registerCondition = USERACCOUNT.USERNAME.equal(userName);
-        Record1<Double> result = getUserID(registerCondition);
+        Record1<UInteger> result = getUserID(registerCondition);
         
         if (result == null) { // userName not found and register is allowed, potential problem for concurrency
             UseraccountRecord returnID = insertUserAccount(userName);
@@ -126,12 +127,12 @@ public class UserAccountResource {
         }
     }
     
-    private Record1<Double> getUserID(Condition condition) {
+    private Record1<UInteger> getUserID(Condition condition) {
         // Connection is AutoCloseable so it will automatically close when it finishes.
         try (Connection conn = UserMysqlServer.getConnection()) {
             DSLContext create = UserMysqlServer.createDSLContext(conn);
             
-            Record1<Double> result = create
+            Record1<UInteger> result = create
                     .select(USERACCOUNT.USERID)
                     .from(USERACCOUNT)
                     .where(condition)

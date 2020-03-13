@@ -35,6 +35,7 @@ import org.jooq.Record1;
 import org.jooq.Record3;
 import org.jooq.Record4;
 import org.jooq.Result;
+import org.jooq.types.UInteger;
 
 import static edu.uci.ics.texera.web.resource.generated.Tables.*;
 import static org.jooq.impl.DSL.*;
@@ -56,14 +57,14 @@ public class UserDictionaryResource {
      * Corresponds to `src/app/dashboard/type/user-dictionary.ts`
      */
     public static class UserDictionary {
-        public double id;
+        public UInteger id; // the ID in MySQL database is unsigned int
         public String name;
         public List<String> items;
         public String description;
         
         public UserDictionary() {} // default constructor reserved for json
 
-        public UserDictionary(double id, String name, List<String> items, String description) {
+        public UserDictionary(UInteger id, String name, List<String> items, String description) {
             this.id = id;
             this.name = name;
             this.items = items;
@@ -98,7 +99,7 @@ public class UserDictionaryResource {
         if (userManualDictionary == null || !userManualDictionary.isValid()) {
             throw new TexeraWebException("Error occurred in user manual dictionary");
         }
-        double userIDDouble = parseStringToDouble(userID);
+        UInteger userIdUInteger = parseStringToUInteger(userID);
         
         List<String> itemArray = convertStringToList(
                 userManualDictionary.content, 
@@ -110,7 +111,7 @@ public class UserDictionaryResource {
                 userManualDictionary.name, 
                 contentByteArray,
                 userManualDictionary.description,
-                userIDDouble);
+                userIdUInteger);
         
         throwErrorWhenNotOne("Error occurred while inserting dictionary to database", count);
         
@@ -126,7 +127,7 @@ public class UserDictionaryResource {
             @FormDataParam("file") FormDataContentDisposition fileDetail,
             @FormDataParam("description") String description
     ) {
-        double userIDDouble = parseStringToDouble(userID);
+        UInteger userIdUInteger = parseStringToUInteger(userID);
         String fileName = fileDetail.getFileName();
         String separator = ",";
         
@@ -138,7 +139,7 @@ public class UserDictionaryResource {
                 fileName,
                 contentByteArray,
                 description,
-                userIDDouble);
+                userIdUInteger);
         
         throwErrorWhenNotOne("Error occurred while inserting dictionary to database", count);
         
@@ -150,9 +151,9 @@ public class UserDictionaryResource {
     public List<UserDictionary> getDictionary(
             @PathParam("userID") String userID
     ) {
-        double userIDDouble = parseStringToDouble(userID);
+        UInteger userIdUInteger = parseStringToUInteger(userID);
         
-        Result<Record4<Double, String, byte[], String>> result = getUserDictionaryRecord(userIDDouble);
+        Result<Record4<UInteger, String, byte[], String>> result = getUserDictionaryRecord(userIdUInteger);
         
         if (result == null) return new ArrayList<>();
         
@@ -174,10 +175,10 @@ public class UserDictionaryResource {
     public GenericWebResponse deleteDictionary(
             @PathParam("dictID") String dictID
     ) {
-        double dictIDDouble = parseStringToDouble(dictID);
+        UInteger dictIdUInteger = parseStringToUInteger(dictID);
         
-        int count = deleteInDatabase(dictIDDouble);
-        throwErrorWhenNotOne("delete dictionary " + dictIDDouble + " failed in database", count);
+        int count = deleteInDatabase(dictIdUInteger);
+        throwErrorWhenNotOne("delete dictionary " + dictIdUInteger + " failed in database", count);
         
         return new GenericWebResponse(0, "success");
     }
@@ -201,7 +202,7 @@ public class UserDictionaryResource {
         return new GenericWebResponse(0, "success");
     }
     
-    private int updateInDatabase(double dictID, String name, byte[] content, String description) {
+    private int updateInDatabase(UInteger dictID, String name, byte[] content, String description) {
         // Connection is AutoCloseable so it will automatically close when it finishes.
         try (Connection conn = UserMysqlServer.getConnection()) {
             DSLContext create = UserMysqlServer.createDSLContext(conn);
@@ -211,7 +212,7 @@ public class UserDictionaryResource {
                     .set(USERDICT.NAME, name)
                     .set(USERDICT.CONTENT, content)
                     .set(USERDICT.DESCRIPTION, description)
-                    .where(USERDICT.DICTID.eq(dictID))
+                    .where(USERDICT.DICTID.eq((dictID)))
                     .execute();
             
             return count;
@@ -221,7 +222,7 @@ public class UserDictionaryResource {
         }
     }
     
-    private int deleteInDatabase(double dictID) {
+    private int deleteInDatabase(UInteger dictID) {
         // Connection is AutoCloseable so it will automatically close when it finishes.
         try (Connection conn = UserMysqlServer.getConnection()) {
             DSLContext create = UserMysqlServer.createDSLContext(conn);
@@ -238,12 +239,12 @@ public class UserDictionaryResource {
         }
     }
     
-    private Result<Record4<Double, String, byte[], String>> getUserDictionaryRecord(double userID) {
+    private Result<Record4<UInteger, String, byte[], String>> getUserDictionaryRecord(UInteger userID) {
         // Connection is AutoCloseable so it will automatically close when it finishes.
         try (Connection conn = UserMysqlServer.getConnection()) {
             DSLContext create = UserMysqlServer.createDSLContext(conn);
             
-            Result<Record4<Double, String, byte[], String>> result = create
+            Result<Record4<UInteger, String, byte[], String>> result = create
                     .select(USERDICT.DICTID, USERDICT.NAME, USERDICT.CONTENT, USERDICT.DESCRIPTION)
                     .from(USERDICT)
                     .where(USERDICT.USERID.equal(userID))
@@ -256,7 +257,7 @@ public class UserDictionaryResource {
         }
     }
     
-    private int insertDictionaryToDataBase(String name, byte[] content, String description, double userID) {
+    private int insertDictionaryToDataBase(String name, byte[] content, String description, UInteger userID) {
         // Connection is AutoCloseable so it will automatically close when it finishes.
         try (Connection conn = UserMysqlServer.getConnection()) {
             DSLContext create = UserMysqlServer.createDSLContext(conn);
@@ -311,11 +312,11 @@ public class UserDictionaryResource {
         }
     }
     
-    private double parseStringToDouble(String userID) throws TexeraWebException {
+    private UInteger parseStringToUInteger(String userID) throws TexeraWebException {
         try {
-            return Double.parseDouble(userID);
+            return UInteger.valueOf(userID);
         } catch (NumberFormatException e) {
-            throw new TexeraWebException("Incorrect String to double");
+            throw new TexeraWebException("Incorrect String to long");
         }
     }
     

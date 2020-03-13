@@ -27,6 +27,7 @@ import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
+import org.jooq.types.UInteger;
 
 
 /**
@@ -42,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Userdict extends TableImpl<UserdictRecord> {
 
-    private static final long serialVersionUID = -1252054186;
+    private static final long serialVersionUID = 124729971;
 
     /**
      * The reference instance of <code>texera.userdict</code>
@@ -60,12 +61,12 @@ public class Userdict extends TableImpl<UserdictRecord> {
     /**
      * The column <code>texera.userdict.userID</code>.
      */
-    public final TableField<UserdictRecord, Double> USERID = createField(DSL.name("userID"), org.jooq.impl.SQLDataType.DOUBLE.nullable(false), this, "");
+    public final TableField<UserdictRecord, UInteger> USERID = createField(DSL.name("userID"), org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
 
     /**
      * The column <code>texera.userdict.dictID</code>.
      */
-    public final TableField<UserdictRecord, Double> DICTID = createField(DSL.name("dictID"), org.jooq.impl.SQLDataType.DOUBLE.nullable(false).identity(true), this, "");
+    public final TableField<UserdictRecord, UInteger> DICTID = createField(DSL.name("dictID"), org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>texera.userdict.name</code>.
@@ -126,7 +127,7 @@ public class Userdict extends TableImpl<UserdictRecord> {
     }
 
     @Override
-    public Identity<UserdictRecord, Double> getIdentity() {
+    public Identity<UserdictRecord, UInteger> getIdentity() {
         return Keys.IDENTITY_USERDICT;
     }
 
@@ -180,7 +181,7 @@ public class Userdict extends TableImpl<UserdictRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<Double, Double, String, byte[], String> fieldsRow() {
+    public Row5<UInteger, UInteger, String, byte[], String> fieldsRow() {
         return (Row5) super.fieldsRow();
     }
 }

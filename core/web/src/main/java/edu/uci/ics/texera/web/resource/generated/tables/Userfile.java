@@ -27,6 +27,7 @@ import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
+import org.jooq.types.UInteger;
 
 
 /**
@@ -42,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Userfile extends TableImpl<UserfileRecord> {
 
-    private static final long serialVersionUID = 234291556;
+    private static final long serialVersionUID = -1720364183;
 
     /**
      * The reference instance of <code>texera.userfile</code>
@@ -60,17 +61,17 @@ public class Userfile extends TableImpl<UserfileRecord> {
     /**
      * The column <code>texera.userfile.userID</code>.
      */
-    public final TableField<UserfileRecord, Double> USERID = createField(DSL.name("userID"), org.jooq.impl.SQLDataType.DOUBLE.nullable(false), this, "");
+    public final TableField<UserfileRecord, UInteger> USERID = createField(DSL.name("userID"), org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
 
     /**
      * The column <code>texera.userfile.fileID</code>.
      */
-    public final TableField<UserfileRecord, Double> FILEID = createField(DSL.name("fileID"), org.jooq.impl.SQLDataType.DOUBLE.nullable(false).identity(true), this, "");
+    public final TableField<UserfileRecord, UInteger> FILEID = createField(DSL.name("fileID"), org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>texera.userfile.size</code>.
      */
-    public final TableField<UserfileRecord, Double> SIZE = createField(DSL.name("size"), org.jooq.impl.SQLDataType.DOUBLE.nullable(false), this, "");
+    public final TableField<UserfileRecord, UInteger> SIZE = createField(DSL.name("size"), org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
 
     /**
      * The column <code>texera.userfile.name</code>.
@@ -131,7 +132,7 @@ public class Userfile extends TableImpl<UserfileRecord> {
     }
 
     @Override
-    public Identity<UserfileRecord, Double> getIdentity() {
+    public Identity<UserfileRecord, UInteger> getIdentity() {
         return Keys.IDENTITY_USERFILE;
     }
 
@@ -185,7 +186,7 @@ public class Userfile extends TableImpl<UserfileRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Double, Double, Double, String, String, String> fieldsRow() {
+    public Row6<UInteger, UInteger, UInteger, String, String, String> fieldsRow() {
         return (Row6) super.fieldsRow();
     }
 }

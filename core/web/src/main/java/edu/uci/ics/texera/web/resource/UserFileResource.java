@@ -27,6 +27,7 @@ import org.jooq.Record1;
 import org.jooq.Record3;
 import org.jooq.Record5;
 import org.jooq.Result;
+import org.jooq.types.UInteger;
 
 import static edu.uci.ics.texera.web.resource.generated.Tables.*;
 import static org.jooq.impl.DSL.*;
@@ -46,13 +47,13 @@ public class UserFileResource {
      * Corresponds to `src/app/dashboard/type/user-file.ts`
      */
     public static class UserFile {
-        public double id;
+        public UInteger id; // the ID in MySQL database is unsigned int
         public String name;
         public String path;
         public String description;
-        public double size;
+        public UInteger size; // the size in MySQL database is unsigned int
 
-        public UserFile(double id, String name, String path, String description, double size) {
+        public UserFile(UInteger id, String name, String path, String description, UInteger size) {
             this.id = id;
             this.name = name;
             this.path = path;
@@ -79,8 +80,8 @@ public class UserFileResource {
             @PathParam("userID") String userID) {
 
         String fileName = fileDetail.getFileName();
-        double sizeDouble = parseStringToDouble(size);
-        this.handleFileUpload(uploadedInputStream, fileName, description, sizeDouble, userID);
+        UInteger sizeUInteger = parseStringToUInteger(size);
+        this.handleFileUpload(uploadedInputStream, fileName, description, sizeUInteger, userID);
         
         return new GenericWebResponse(0, "success");
     }
@@ -88,9 +89,9 @@ public class UserFileResource {
     @GET
     @Path("/get-files/{userID}")
     public List<UserFile> getUserFiles(@PathParam("userID") String userID){
-        double userIDDouble = parseStringToDouble(userID);
+        UInteger userIdUInteger = parseStringToUInteger(userID);
         
-        Result<Record5<Double, String, String, String, Double>> result = getUserFileRecord(userIDDouble);
+        Result<Record5<UInteger, String, String, String, UInteger>> result = getUserFileRecord(userIdUInteger);
         
         if (result == null) return new ArrayList<>();
         
@@ -111,8 +112,8 @@ public class UserFileResource {
     @DELETE
     @Path("/delete-file/{fileID}")
     public GenericWebResponse deleteUserFiles(@PathParam("fileID") String fileID) {
-        double fileIDDouble = parseStringToDouble(fileID);
-        Record1<String> result = deleteInDatabase(fileIDDouble);
+        UInteger fileIdUInteger = parseStringToUInteger(fileID);
+        Record1<String> result = deleteInDatabase(fileIdUInteger);
         
         if (result == null) throw new TexeraWebException("The file does not exist");
         
@@ -122,7 +123,7 @@ public class UserFileResource {
         return new GenericWebResponse(0, "success");
     }
     
-    private Record1<String> deleteInDatabase(double fileID) {
+    private Record1<String> deleteInDatabase(UInteger fileID) {
         // Connection is AutoCloseable so it will automatically close when it finishes.
         try (Connection conn = UserMysqlServer.getConnection()) {
             DSLContext create = UserMysqlServer.createDSLContext(conn);
@@ -153,12 +154,12 @@ public class UserFileResource {
         }
     }
     
-    private Result<Record5<Double, String, String, String, Double>> getUserFileRecord(double userID) {
+    private Result<Record5<UInteger, String, String, String, UInteger>> getUserFileRecord(UInteger userID) {
         // Connection is AutoCloseable so it will automatically close when it finishes.
         try (Connection conn = UserMysqlServer.getConnection()) {
             DSLContext create = UserMysqlServer.createDSLContext(conn);
             
-            Result<Record5<Double, String, String, String, Double>> result = create
+            Result<Record5<UInteger, String, String, String, UInteger>> result = create
                     .select(USERFILE.FILEID, USERFILE.NAME, USERFILE.PATH, USERFILE.DESCRIPTION, USERFILE.SIZE)
                     .from(USERFILE)
                     .where(USERFILE.USERID.equal(userID))
@@ -171,8 +172,8 @@ public class UserFileResource {
         }
     }
     
-    private void handleFileUpload(InputStream fileStream, String fileName, String description, double size, String userID) {
-        double userIDDouble = parseStringToDouble(userID);
+    private void handleFileUpload(InputStream fileStream, String fileName, String description, UInteger size, String userID) {
+        UInteger userIdUInteger = parseStringToUInteger(userID);
         checkFileNameValid(fileName);
         
         int count = insertFileToDataBase(
@@ -180,23 +181,23 @@ public class UserFileResource {
                 FileManager.getFilePath(userID, fileName).toString(),
                 size,
                 description,
-                userIDDouble);
+                userIdUInteger);
         
         throwErrorWhenNotOne("Error occurred while inserting file record to database", count);
         
         FileManager.getInstance().storeFile(fileStream, fileName, userID);
     }
     
-    private double parseStringToDouble(String userID) throws TexeraWebException {
+    private UInteger parseStringToUInteger(String userID) throws TexeraWebException {
         try {
-            return Double.parseDouble(userID);
+            return UInteger.valueOf(userID);
         } catch (NumberFormatException e) {
             throw new TexeraWebException("Incorrect String to Double");
         }
     }
     
     
-    private int insertFileToDataBase(String fileName, String path, double size, String description, double userID) {
+    private int insertFileToDataBase(String fileName, String path, UInteger size, String description, UInteger userID) {
         // Connection is AutoCloseable so it will automatically close when it finishes.
         try (Connection conn = UserMysqlServer.getConnection()) {
             DSLContext create = UserMysqlServer.createDSLContext(conn);
