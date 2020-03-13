@@ -79,10 +79,10 @@
     </button>
   </div>
   <div *ngIf="!isInUploadFileTab">
-    <button class="btn btn-outline-dark add-button bottom-size"
+    <button class="btn btn-primary btn-xs bottom-upload bottom-size"
       (click)="clickUploadManualDictionaryButton()"
       [disabled]="!isManualDictionaryValid()">
-        <span *ngIf="!true">Add</span>
+        <span *ngIf="true">Add</span>
         <span *ngIf="false" class='fa fa-spinner fa-spin'></span>
     </button>
   </div>

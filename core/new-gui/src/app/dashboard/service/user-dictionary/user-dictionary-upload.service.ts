@@ -120,12 +120,22 @@ export class UserDictionaryUploadService {
    * upload the manual dictionary to the backend.
    * This method will automatically refresh the user-dictionary service when succeed.
    */
-  public uploadManualDictionary(): Observable<GenericWebResponse> {
+  public uploadManualDictionary(): void {
     if (!this.userAccountService.isLogin()) {throw new Error(`Can not upload manual dictionary when not login`); }
     if (!this.isManualDictionaryValid) {throw new Error(`Can not upload invalid manual dictionary`); }
 
     if (this.manualDictionary.separator === '') { this.manualDictionary.separator = ','; }
-    return this.putManualDictionaryHttpRequest(this.manualDictionary, this.userAccountService.getCurrentUserField('userID'));
+    this.putManualDictionaryHttpRequest(this.manualDictionary, this.userAccountService.getCurrentUserField('userID'))
+      .subscribe(
+        () => {
+          this.manualDictionary = this.createEmptyManualDictionary();
+          this.userDictionaryService.refreshDictionary();
+        }, error => {
+          // TODO: user friendly error message.
+          console.log(error);
+          alert(`Error encountered: ${error.status}\nMessage: ${error.message}`);
+        }
+      );
   }
 
   private putManualDictionaryHttpRequest(manualDictionary: ManualDictionary, userID: number): Observable<GenericWebResponse> {
