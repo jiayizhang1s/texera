@@ -36,6 +36,7 @@ describe('UserAccountService', () => {
         HttpClientTestingModule
       ]
     });
+    window.sessionStorage.clear();
   });
 
   afterEach(inject([HttpTestingController], (httpMock: HttpTestingController) => {
