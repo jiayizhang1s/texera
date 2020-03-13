@@ -101,7 +101,7 @@ export class UserFileUploadService {
     formData.append('file', fileUploadItem.file, fileUploadItem.name);
     formData.append('size', fileUploadItem.file.size.toString());
     formData.append('description', fileUploadItem.description);
-    return this.postFileHttpRequest(formData, this.userAccountService.getCurrentUserField('userID'));
+    return this.postFileHttpRequest(formData, this.userAccountService.getUserID());
   }
 
   private postFileHttpRequest(formData: FormData, userID: number): Observable<GenericWebResponse> {

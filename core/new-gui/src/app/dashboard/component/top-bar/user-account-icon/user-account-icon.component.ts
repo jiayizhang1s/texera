@@ -21,7 +21,11 @@ export class UserAccountIconComponent implements OnInit {
   constructor(
     private modalService: NgbModal,
     private userAccountService: UserAccountService
-  ) {}
+  ) {
+      if (userAccountService.isLogin()) {
+        this.userName = this.userAccountService.getUserName();
+      }
+  }
 
   ngOnInit() {
     this.detectUserChange();
@@ -73,7 +77,7 @@ export class UserAccountIconComponent implements OnInit {
       .subscribe(
         () => {
           if (this.userAccountService.isLogin()) {
-            this.userName = this.userAccountService.getCurrentUserField('userName');
+            this.userName = this.userAccountService.getUserName();
           } else {
             this.userName = this.getDefaultUserName();
           }

@@ -125,7 +125,7 @@ export class UserDictionaryUploadService {
     if (!this.isManualDictionaryValid) {throw new Error(`Can not upload invalid manual dictionary`); }
 
     if (this.manualDictionary.separator === '') { this.manualDictionary.separator = ','; }
-    this.putManualDictionaryHttpRequest(this.manualDictionary, this.userAccountService.getCurrentUserField('userID'))
+    this.putManualDictionaryHttpRequest(this.manualDictionary, this.userAccountService.getUserID())
       .subscribe(
         () => {
           this.manualDictionary = this.createEmptyManualDictionary();
@@ -162,7 +162,7 @@ export class UserDictionaryUploadService {
     const formData: FormData = new FormData();
     formData.append('file', dictionaryUploadItem.file, dictionaryUploadItem.name);
     formData.append('description', dictionaryUploadItem.description);
-    return this.postDictionaryHttpRequest(formData, this.userAccountService.getCurrentUserField('userID'));
+    return this.postDictionaryHttpRequest(formData, this.userAccountService.getUserID());
   }
 
   private postDictionaryHttpRequest(formData: FormData, userID: number): Observable<GenericWebResponse> {

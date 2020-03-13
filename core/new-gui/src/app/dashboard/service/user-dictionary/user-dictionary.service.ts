@@ -39,7 +39,7 @@ export class UserDictionaryService {
     if (!this.userAccountService.isLogin()) {return; }
 
     this.getDictionaryHttpRequest(
-      this.userAccountService.getCurrentUserField('userID')
+      this.userAccountService.getUserID()
       ).subscribe(
       dictionaries => this.dictionaryArray = dictionaries
     );

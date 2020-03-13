@@ -4,7 +4,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { environment } from '../../../../environments/environment';
 import { EventEmitter } from '@angular/core';
-import { observable } from 'rxjs';
+import { observable, BehaviorSubject } from 'rxjs';
 import { UserAccount } from '../../type/user-account';
 import { UserAccountResponse } from '../../type/user-account';
 
@@ -20,10 +20,17 @@ export const loginURL = 'users/accounts/login';
 @Injectable()
 export class UserAccountService {
   private userChangeEvent: EventEmitter<UserAccount> = new EventEmitter();
-  private currentUser: UserAccount = this.createEmptyUser();
   private isLoginFlag: boolean = false;
+  private currentUser: UserAccount = this.createEmptyUser();
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+    const userString: string | null = window.sessionStorage.getItem('currentUser');
+    if (userString !== null) { // null checks here
+      // tslint:disable-next-line:no-non-null-assertion
+      const storedUser = JSON.parse(window.sessionStorage.getItem('currentUser')!);
+      this.changeUser(storedUser, 0);
+    }
+  }
 
   /**
    * This method will handle the request for user registration.
@@ -38,6 +45,7 @@ export class UserAccountService {
     return this.registerHttpRequest(userName).map(
       res => {
         if (res.code === 0) {
+          window.sessionStorage.setItem('currentUser', JSON.stringify(res.userAccount));
           this.changeUser(res.userAccount, res.code);
           return res;
         } else { // register failed
@@ -59,6 +67,7 @@ export class UserAccountService {
     return this.loginHttpRequest(userName).map(
       res => {
         if (res.code === 0) {
+          window.sessionStorage.setItem('currentUser', JSON.stringify(res.userAccount));
           this.changeUser(res.userAccount, res.code);
           return res;
         } else { // login failed
@@ -72,6 +81,7 @@ export class UserAccountService {
    * this method will clear the saved user account and trigger userChangeEvent
    */
   public logOut(): void {
+    window.sessionStorage.removeItem('currentUser');
     this.changeUser(this.createEmptyUser(), 1);
   }
 
@@ -83,12 +93,10 @@ export class UserAccountService {
   }
 
   public getUserID(): number {
-    if (!this.isLogin()) {throw new Error('User is not login yet'); }
     return this.getCurrentUserField('userID');
   }
 
   public getUserName(): string {
-    if (!this.isLogin()) {throw new Error('User is not login yet'); }
     return this.getCurrentUserField('userName');
   }
 

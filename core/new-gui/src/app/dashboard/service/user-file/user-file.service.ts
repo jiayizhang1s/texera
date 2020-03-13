@@ -94,11 +94,11 @@ export class UserFileService {
 
   /**
    * convert the input file size to the human readable size by adding the unit at the end.
-   * eg. 2048 -> 2 KB
+   * eg. 2048 -> 2.0 KB
    * @param fileSize
    */
   public addFileSizeUnit(fileSize: number): string {
-    if (fileSize < 1024) { return fileSize + ' Byte'; }
+    if (fileSize <= 1024) { return fileSize + ' Byte'; }
 
     let i = 0;
     const byteUnits = [' Byte', ' KB', ' MB', ' GB', ' TB', ' PB', ' EB', ' ZB', ' YB'];
