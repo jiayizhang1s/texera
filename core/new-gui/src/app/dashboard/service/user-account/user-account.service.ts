@@ -24,10 +24,10 @@ export class UserAccountService {
   private currentUser: UserAccount = this.createEmptyUser();
 
   constructor(private http: HttpClient) {
-    const userString: string | null = window.sessionStorage.getItem('currentUser');
+    const userString: string | null = window.localStorage.getItem('currentUser');
     if (userString !== null) { // null checks here
       // tslint:disable-next-line:no-non-null-assertion
-      const storedUser = JSON.parse(window.sessionStorage.getItem('currentUser')!);
+      const storedUser = JSON.parse(window.localStorage.getItem('currentUser')!);
       this.changeUser(storedUser, 0);
     }
   }
@@ -45,7 +45,7 @@ export class UserAccountService {
     return this.registerHttpRequest(userName).map(
       res => {
         if (res.code === 0) {
-          window.sessionStorage.setItem('currentUser', JSON.stringify(res.userAccount));
+          window.localStorage.setItem('currentUser', JSON.stringify(res.userAccount));
           this.changeUser(res.userAccount, res.code);
           return res;
         } else { // register failed
@@ -67,7 +67,7 @@ export class UserAccountService {
     return this.loginHttpRequest(userName).map(
       res => {
         if (res.code === 0) {
-          window.sessionStorage.setItem('currentUser', JSON.stringify(res.userAccount));
+          window.localStorage.setItem('currentUser', JSON.stringify(res.userAccount));
           this.changeUser(res.userAccount, res.code);
           return res;
         } else { // login failed
@@ -81,7 +81,7 @@ export class UserAccountService {
    * this method will clear the saved user account and trigger userChangeEvent
    */
   public logOut(): void {
-    window.sessionStorage.removeItem('currentUser');
+    window.localStorage.removeItem('currentUser');
     this.changeUser(this.createEmptyUser(), 1);
   }
 

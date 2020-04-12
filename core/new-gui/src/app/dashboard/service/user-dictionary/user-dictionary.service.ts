@@ -29,6 +29,9 @@ export class UserDictionaryService {
     private http: HttpClient,
     private userAccountService: UserAccountService) {
       this.detectUserChanges();
+      if (this.userAccountService.isLogin()) {
+        this.refreshDictionary();
+      }
     }
 
   /**

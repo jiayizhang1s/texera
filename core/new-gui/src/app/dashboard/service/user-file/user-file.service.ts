@@ -20,6 +20,9 @@ export class UserFileService {
     private http: HttpClient
     ) {
       this.detectUserChanges();
+      if (this.userAccountService.isLogin()) {
+        this.refreshFiles();
+      }
   }
 
   /**
