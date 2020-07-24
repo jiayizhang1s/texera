@@ -138,6 +138,7 @@ class FlightServer(pyarrow.flight.FlightServerBase):
 			self.flights[FlightServer.descriptor_to_key(output_descriptor)] = pyarrow.Table.from_pandas(output_dataframe)
 			# print("Done.")
 			# print("Flight Server:\tDone.")
+			self.flights.pop(key)
 			yield pyarrow.flight.Result(pyarrow.py_buffer(b'Success!'))
 		elif action.type == "healthcheck":
 			yield pyarrow.flight.Result(pyarrow.py_buffer(b'Flight Server is up and running!'))
@@ -154,7 +155,7 @@ class FlightServer(pyarrow.flight.FlightServerBase):
 		print("Flight Server:\tServer is shutting down...")
 
 		self.shutdown()
-		self.awaitTermination()
+		self.wait()
 
 
 def main():
