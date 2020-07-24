@@ -154,6 +154,7 @@ class FlightServer(pyarrow.flight.FlightServerBase):
 		print("Flight Server:\tServer is shutting down...")
 
 		self.shutdown()
+		self.awaitTermination()
 
 
 def main():

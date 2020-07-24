@@ -119,7 +119,7 @@ public class TobaccoRelevancyOperator implements IOperator {
                             flightClient.doAction(new Action("healthcheck")).next().getBody(), StandardCharsets.UTF_8);
                     connected = message.equals("Flight Server is up and running!");
                 } catch (Exception e) {
-                    e.printStackTrace();
+//                    e.printStackTrace();
                     System.out.println("Flight Client:\tNot connected to the server in this try.");
                 }
             }

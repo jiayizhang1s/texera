@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import edu.uci.ics.texera.dataflow.aggregator.AggregatorPredicate;
 import edu.uci.ics.texera.dataflow.plangen.QueryContext;
+import edu.uci.ics.texera.dataflow.sink.wordcloud.WordCloudSinkPredicate;
 import edu.uci.ics.texera.dataflow.twitterfeed.TwitterFeedSourcePredicate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -107,7 +108,8 @@ import edu.uci.ics.texera.dataflow.nlp.sentiment.arrow.NltkSentimentPredicate;
         @Type(value = BarChartSinkPredicate.class, name = "BarChart"),
         @Type(value = PieChartSinkPredicate.class, name = "PieChart"),
         @Type(value = NltkSentimentPredicate.class, name = "NltkSentiment"),
-        @Type(value = TobaccoRelevancyPredicate.class, name = "TobaccoRelevancy")
+        @Type(value = TobaccoRelevancyPredicate.class, name = "TobaccoRelevancy"),
+        @Type(value = WordCloudSinkPredicate.class, name = "WordCloud")
 
 })
 public abstract class PredicateBase implements IPredicate {

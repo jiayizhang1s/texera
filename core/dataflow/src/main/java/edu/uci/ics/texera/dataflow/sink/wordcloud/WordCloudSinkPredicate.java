@@ -45,7 +45,7 @@ public class WordCloudSinkPredicate extends PredicateBase {
 
     public static Map<String, Object> getOperatorMetadata() {
         return ImmutableMap.<String, Object>builder()
-            .put(PropertyNameConstants.USER_FRIENDLY_NAME, "Word cloud (used with word count)")
+            .put(PropertyNameConstants.USER_FRIENDLY_NAME, "Word cloud")
             .put(PropertyNameConstants.OPERATOR_DESCRIPTION, "View the word count in visual approach")
             .put(PropertyNameConstants.OPERATOR_GROUP_NAME, OperatorGroupConstants.RESULT_GROUP)
             .build();
