@@ -7,14 +7,21 @@ import edu.uci.ics.texera.web.TexeraWebException;
 import edu.uci.ics.texera.web.response.GenericWebResponse;
 import io.dropwizard.jersey.sessions.Session;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.jooq.Record;
+import org.jooq.Record1;
 import org.jooq.Record3;
+import org.jooq.Result;
+import org.jooq.types.UInteger;
 
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import static edu.uci.ics.texera.dataflow.jooq.generated.Tables.USERACCOUNT;
 import static edu.uci.ics.texera.dataflow.jooq.generated.Tables.USERWORKFLOW;
 
 /**
@@ -44,6 +51,39 @@ public class UserWorkflowResource {
         }
     }
 
+    public static class UserWorkflowListRequest {
+        public String username;
+    }
+
+    public static class UserWorkflowListWebResponse {
+        public List<String> nameList = new ArrayList<>();
+        public UserWorkflowListWebResponse(Result<Record1<String>> names) {
+            for (Record1<String> name: names) {
+                nameList.add(name.value1());
+                System.out.println(nameList);
+            }
+        }
+    }
+    @POST
+    @Path("/workflow-list")
+    public UserWorkflowListWebResponse getUserWorkflowList(UserWorkflowListRequest request, @Session HttpSession session) {
+
+        UserResource.User user = UserResource.getUser(session);
+        if (user == null) {
+            throw new TexeraWebException("No access");
+        }
+        Record1<UInteger> userID = UserSqlServer.createDSLContext()
+                                    .select(USERACCOUNT.USERID)
+                                    .from(USERACCOUNT)
+                                    .where(USERACCOUNT.USERNAME.equal(request.username))
+                                    .fetchOne();
+
+        Result<Record1<String>> names = UserSqlServer.createDSLContext()
+                            .select(USERWORKFLOW.NAME)
+                            .from(USERWORKFLOW)
+                            .where(USERWORKFLOW.USERID.equal(userID.value1())).fetch();
+        return new UserWorkflowListWebResponse(names);
+    }
     /**
      * This method handles the frontend's request to get a specific workflow to be displayed
      * at current design, it only takes the workflowID and searches within the database for the matching workflow

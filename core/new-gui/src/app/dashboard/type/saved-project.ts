@@ -5,3 +5,7 @@ export interface SavedProject {
   creationTime: string;
   lastModifiedTime: string;
 }
+
+export interface SavedProjectList {
+  nameList: string[];
+}

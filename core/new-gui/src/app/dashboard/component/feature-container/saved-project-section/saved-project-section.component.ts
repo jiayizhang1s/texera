@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { SavedProject } from '../../../type/saved-project';
+import { SavedProject, SavedProjectList } from '../../../type/saved-project';
 import { SavedProjectService } from '../../../service/saved-project/saved-project.service';
-
+import { UserService } from '../../../../common/service/user/user.service'
 import { NgbdModalAddProjectComponent } from './ngbd-modal-add-project/ngbd-modal-add-project.component';
 import { NgbdModalDeleteProjectComponent } from './ngbd-modal-delete-project/ngbd-modal-delete-project.component';
 
@@ -25,19 +25,29 @@ import { Observable } from 'rxjs';
 })
 export class SavedProjectSectionComponent implements OnInit {
 
+  public savedProjectList: SavedProjectList = { nameList: ['a', 'b', 'c']};
   public projects: SavedProject[] = [];
 
   public defaultWeb: String = 'http://localhost:4200/';
 
   constructor(
     private savedProjectService: SavedProjectService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private userService: UserService
   ) { }
 
   ngOnInit() {
-    this.savedProjectService.getSavedProjectData().subscribe(
-      value => this.projects = value,
-    );
+
+    const user = this.userService.getUser();
+    console.log("Running");
+    if (user) {
+      console.log("Running");
+      this.savedProjectService.getSavedProjectData(user.userName).subscribe(value => {
+        console.log(value);
+        this.savedProjectList = value;
+    })
+
+    }
   }
 
   /**
