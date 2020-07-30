@@ -34,7 +34,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Useraccount extends TableImpl<UseraccountRecord> {
 
-    private static final long serialVersionUID = -860233640;
+    private static final long serialVersionUID = 787420121;
 
     /**
      * The reference instance of <code>texera.useraccount</code>
@@ -57,7 +57,7 @@ public class Useraccount extends TableImpl<UseraccountRecord> {
     /**
      * The column <code>texera.useraccount.password</code>.
      */
-    public final TableField<UseraccountRecord, String> PASSWORD = createField(DSL.name("password"), org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false), this, "");
+    public final TableField<UseraccountRecord, String> PASSWORD = createField(DSL.name("password"), org.jooq.impl.SQLDataType.VARCHAR(64).nullable(false), this, "");
 
     /**
      * The column <code>texera.useraccount.userID</code>.
