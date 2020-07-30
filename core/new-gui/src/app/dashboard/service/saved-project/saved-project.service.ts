@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
+import { AppSettings } from '../../../common/app-setting';
 import { Observable } from 'rxjs/Observable';
-import { SavedProject } from '../../type/saved-project';
+import { SavedProject, SavedProjectList } from '../../type/saved-project';
 
 /**
  * Saved Project service should be able to get all the
@@ -17,14 +17,16 @@ import { SavedProject } from '../../type/saved-project';
 @Injectable()
 export class SavedProjectService {
 
+
   constructor(private http: HttpClient) { }
 
-  public getSavedProjectData(): Observable<SavedProject[]> {
-    return Observable.of([]);
-  }
 
+  public getSavedProjectData(username: String): Observable<SavedProjectList> {
+    return Observable.of({nameList:['q']});
+  }
 
   public deleteSavedProjectData(deleteProject: SavedProject) {
     return null;
+
   }
 }

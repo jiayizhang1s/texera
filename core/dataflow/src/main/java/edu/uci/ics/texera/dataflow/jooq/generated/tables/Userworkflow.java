@@ -17,13 +17,14 @@ import org.jooq.ForeignKey;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row3;
+import org.jooq.Row4;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
+import org.jooq.types.UInteger;
 
 
 /**
@@ -32,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Userworkflow extends TableImpl<UserworkflowRecord> {
 
-    private static final long serialVersionUID = 1905667491;
+    private static final long serialVersionUID = 1872490894;
 
     /**
      * The reference instance of <code>texera.userworkflow</code>
@@ -46,6 +47,11 @@ public class Userworkflow extends TableImpl<UserworkflowRecord> {
     public Class<UserworkflowRecord> getRecordType() {
         return UserworkflowRecord.class;
     }
+
+    /**
+     * The column <code>texera.userworkflow.userID</code>.
+     */
+    public final TableField<UserworkflowRecord, UInteger> USERID = createField(DSL.name("userID"), org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
 
     /**
      * The column <code>texera.userworkflow.name</code>.
@@ -102,7 +108,7 @@ public class Userworkflow extends TableImpl<UserworkflowRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.USERWORKFLOW_PRIMARY);
+        return Arrays.<Index>asList(Indexes.USERWORKFLOW_PRIMARY, Indexes.USERWORKFLOW_USERID);
     }
 
     @Override
@@ -112,7 +118,16 @@ public class Userworkflow extends TableImpl<UserworkflowRecord> {
 
     @Override
     public List<UniqueKey<UserworkflowRecord>> getKeys() {
-        return Arrays.<UniqueKey<UserworkflowRecord>>asList(Keys.KEY_USERWORKFLOW_PRIMARY);
+        return Arrays.<UniqueKey<UserworkflowRecord>>asList(Keys.KEY_USERWORKFLOW_USERID, Keys.KEY_USERWORKFLOW_PRIMARY);
+    }
+
+    @Override
+    public List<ForeignKey<UserworkflowRecord, ?>> getReferences() {
+        return Arrays.<ForeignKey<UserworkflowRecord, ?>>asList(Keys.USERWORKFLOW_IBFK_1);
+    }
+
+    public Useraccount useraccount() {
+        return new Useraccount(this, Keys.USERWORKFLOW_IBFK_1);
     }
 
     @Override
@@ -142,11 +157,11 @@ public class Userworkflow extends TableImpl<UserworkflowRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row3 type methods
+    // Row4 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row3<String, String, String> fieldsRow() {
-        return (Row3) super.fieldsRow();
+    public Row4<UInteger, String, String, String> fieldsRow() {
+        return (Row4) super.fieldsRow();
     }
 }
