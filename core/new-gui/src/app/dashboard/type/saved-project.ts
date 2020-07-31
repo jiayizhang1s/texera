@@ -6,6 +6,7 @@ export interface SavedProject {
   lastModifiedTime: string;
 }
 
+
 export interface SavedProjectList {
-  nameList: string[];
+  projectList: SavedProject[];
 }

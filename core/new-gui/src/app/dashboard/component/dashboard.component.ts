@@ -15,7 +15,7 @@ import { StubSavedProjectService } from '../service/saved-project/stub-saved-pro
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
   providers: [
-    { provide: SavedProjectService, useClass: StubSavedProjectService }
+    { provide: SavedProjectService, useClass: SavedProjectService }
   ]
 })
 export class DashboardComponent implements OnInit {

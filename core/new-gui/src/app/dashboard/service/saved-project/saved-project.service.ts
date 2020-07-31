@@ -22,7 +22,11 @@ export class SavedProjectService {
 
 
   public getSavedProjectData(username: String): Observable<SavedProjectList> {
-    return Observable.of({nameList:['q']});
+    const body = {username: username};
+    return this.http.post<SavedProjectList>(
+      `${AppSettings.getApiEndpoint()}/workflow/workflow-list`,
+        JSON.stringify(body),
+        { headers: {'Content-Type' : 'application/json'}});
   }
 
   public deleteSavedProjectData(deleteProject: SavedProject) {

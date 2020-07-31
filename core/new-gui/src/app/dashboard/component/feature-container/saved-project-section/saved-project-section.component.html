@@ -26,8 +26,8 @@
               <h2 class="page-title">Projects</h2>
               <br/>
             </div>
-            <li *ngFor="let name of savedProjectList.nameList">
-              <ul><p>{{ name }}</p></ul>
+            <li *ngFor="let name of savedProjectList.projectList">
+              <ul><p>{{ name.id }}</p> <p>{{ name.name}}</p> </ul>
             </li>
             <div class = "scroll">
             <mat-list-item *ngFor="let project of projects" class= "project-list-item">
