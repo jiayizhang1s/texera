@@ -3,9 +3,6 @@ import { TestBed, inject } from '@angular/core/testing';
 import { SavedProjectService } from './saved-project.service';
 
 import { HttpClient } from '@angular/common/http';
-
-import { marbles} from 'rxjs-marbles';
-import { Observable } from 'rxjs/Observable';
 import { StubSavedProjectService } from './stub-saved-project.service';
 
 class StubHttpClient {
@@ -15,7 +12,6 @@ class StubHttpClient {
 describe('SavedProjectService', () => {
 
   let service: SavedProjectService;
-  const USER = 'Tom';
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
@@ -33,7 +29,7 @@ describe('SavedProjectService', () => {
 
 
   it('should return the same observable of array as expected if getSavedProjectData is called ', () => {
-    const saveDataObservable = service.getSavedProjectData(USER);
+    const saveDataObservable = service.getSavedProjectData();
 
     // the current service test is in hard-coded style since there is no service with can give feedback
 

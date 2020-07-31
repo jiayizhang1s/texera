@@ -25,26 +25,20 @@ import { Observable } from 'rxjs';
 })
 export class SavedProjectSectionComponent implements OnInit {
 
-  public savedProjectList: SavedProjectList = { projectList: []};
   public projects: SavedProject[] = [];
 
   public defaultWeb: String = 'http://localhost:4200/';
 
   constructor(
     private savedProjectService: SavedProjectService,
-    private modalService: NgbModal,
-    private userService: UserService
+    private modalService: NgbModal
   ) { }
 
   ngOnInit() {
 
-    const user = this.userService.getUser();
-    if (user) {
-      this.savedProjectService.getSavedProjectData(user.userName).subscribe(value => {
+      this.savedProjectService.getSavedProjectData().subscribe(value => {
         this.projects = value;
-    });
-
-    }
+      });
   }
 
   /**
