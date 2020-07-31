@@ -61,17 +61,16 @@ public class UserWorkflowResource {
             this.name = name;
         }
     }
-    public static class UserWorkflowListWebResponse {
-        public List<UserWorkflowDescription> projectList = new ArrayList<>();
-        public UserWorkflowListWebResponse(Result<Record2<String, String>> projects) {
-            for (Record2<String, String> project: projects) {
-                projectList.add(new UserWorkflowDescription(project.value1(), project.value2()));
-            }
-        }
-    }
+    /**
+     * This method handles the frontend's request to get all workflows of a specific user.
+     *
+     * @param UserWorkflowListRequest
+     * @param session
+     * @return a json string representing an list of projects which records workflow id and name.
+     */
     @POST
     @Path("/workflow-list")
-    public UserWorkflowListWebResponse getUserWorkflowList(UserWorkflowListRequest request, @Session HttpSession session) {
+    public List<UserWorkflowDescription> getUserWorkflowList(UserWorkflowListRequest request, @Session HttpSession session) {
 
         UserResource.User user = UserResource.getUser(session);
         if (user == null) {
@@ -87,7 +86,13 @@ public class UserWorkflowResource {
                             .select(USERWORKFLOW.WORKFLOWID, USERWORKFLOW.NAME)
                             .from(USERWORKFLOW)
                             .where(USERWORKFLOW.USERID.equal(userID.value1())).fetch();
-        return new UserWorkflowListWebResponse(projects);
+
+        List<UserWorkflowDescription> projectList = new ArrayList<>();
+        for (Record2<String, String> project: projects) {
+            projectList.add(new UserWorkflowDescription(project.value1(), project.value2()));
+        }
+
+        return projectList;
     }
     /**
      * This method handles the frontend's request to get a specific workflow to be displayed

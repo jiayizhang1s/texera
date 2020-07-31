@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { SavedProject, SavedProjectList } from '../../../type/saved-project';
+import { SavedProject} from '../../../type/saved-project';
 import { SavedProjectService } from '../../../service/saved-project/saved-project.service';
 import { UserService } from '../../../../common/service/user/user.service';
 import { NgbdModalAddProjectComponent } from './ngbd-modal-add-project/ngbd-modal-add-project.component';
@@ -39,12 +39,9 @@ export class SavedProjectSectionComponent implements OnInit {
   ngOnInit() {
 
     const user = this.userService.getUser();
-    console.log('Running');
     if (user) {
-      console.log('Running');
       this.savedProjectService.getSavedProjectData(user.userName).subscribe(value => {
-        console.log(value);
-        this.savedProjectList = value;
+        this.projects = value;
     });
 
     }

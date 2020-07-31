@@ -21,9 +21,9 @@ export class SavedProjectService {
   constructor(private http: HttpClient) { }
 
 
-  public getSavedProjectData(username: String): Observable<SavedProjectList> {
+  public getSavedProjectData(username: String): Observable<SavedProject[]> {
     const body = {username: username};
-    return this.http.post<SavedProjectList>(
+    return this.http.post<SavedProject[]>(
       `${AppSettings.getApiEndpoint()}/workflow/workflow-list`,
         JSON.stringify(body),
         { headers: {'Content-Type' : 'application/json'}});
