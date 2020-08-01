@@ -124,10 +124,10 @@ export class ResultPanelComponent {
     const highlightedOperators = this.workflowActionService.getJointGraphWrapper().getCurrentHighlightedOperatorIDs();
 
     if (highlightedOperators.length === 1) {
-      this.showResultPanel = true;
       const resultMap = this.executeWorkflowService.getResultMap();
       const result: ResultObject | undefined = resultMap.get(highlightedOperators[0]);
       if (result) {
+        this.resultPanelToggleService.openResultPanel();
         this.displayResultTable(result.table);
         if (result.chartType) {
           this.chartType = result?.chartType;
@@ -136,7 +136,7 @@ export class ResultPanelComponent {
         }
       }
     } else {
-      this.showResultPanel = false;
+      this.resultPanelToggleService.closeResultPanel();
     }
   }
 
@@ -231,9 +231,7 @@ export class ResultPanelComponent {
    * @param response
    */
   private displayResultTable(resultData: ReadonlyArray<object>) {
-     if (resultData.length < 1) {
-       throw new Error(`display result table inconsistency: result data should not be empty`);
-     }
+
      // don't display message, display result table instead
      this.showMessage = false;
 
