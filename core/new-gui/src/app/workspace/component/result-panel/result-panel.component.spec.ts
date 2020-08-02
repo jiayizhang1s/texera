@@ -156,14 +156,6 @@ describe('ResultPanelComponent', () => {
     });
   }));
 
-  it(`should throw an error when displayResultTable() is called with execution result that has 0 size`, () => {
-
-    // This is a way to get the private method in Components. Since this edge case can
-    //  never be reached in the public method, this architecture is required.
-    (component as any).displayResultTable(mockExecutionEmptyResult.result);
-    expect(component.showMessage).toEqual(false);
-
-  });
 
   it('should respond to error and print error messages', marbles((m) => {
     const endMarbleString = '-e-|';
