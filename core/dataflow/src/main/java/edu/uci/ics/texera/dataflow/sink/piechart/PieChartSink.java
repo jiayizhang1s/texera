@@ -15,7 +15,9 @@ import edu.uci.ics.texera.api.schema.Schema;
 import edu.uci.ics.texera.api.tuple.Tuple;
 import edu.uci.ics.texera.dataflow.sink.VisualizationOperator;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 /**
  * PieChartSink is a sink that can be used by to get tuples for pie chart.
@@ -93,33 +95,46 @@ public class PieChartSink extends VisualizationOperator {
             .map(e -> new Tuple(outputSchema, e.getField(predicate.getNameColumn()), e.getField(predicate.getDataColumn())))
             .collect(Collectors.toList());
         // sort all tuples in the descending order
-        list.sort((left, right) -> {
-            double leftValue =   VisualizationOperator.extractNumber(left.getField(predicate.getDataColumn()));
-            double rightValue =  VisualizationOperator.extractNumber(right.getField(predicate.getDataColumn())) ;
-            if ( leftValue < rightValue ) {
-                return 1;
-            } else if (leftValue == rightValue) {
-                return 0;
-            } else {
-                return -1;
-            }
-        });
+
         // calculate sum of data column
         double sum = 0.0;
+        HashMap<String, Double> tupleMap = new HashMap<>();
         for (Tuple t: list) {
-            sum += VisualizationOperator.extractNumber(t.getField(predicate.getDataColumn()));
+            IField field = t.getField(predicate.getNameColumn());
+            double value = VisualizationOperator.extractNumber(t.getField(predicate.getDataColumn()));
+            String name = null;
+            if (field instanceof StringField) {
+                StringField stringField = (StringField)field;
+                name = stringField.getValue();
+            } else if (field instanceof  TextField) {
+                TextField textField = (TextField)field;
+                name = textField.getValue();
+            }
+            if (tupleMap.get(name) == null) {
+                tupleMap.put(name, value);
+            } else {
+                tupleMap.put(name, tupleMap.get(name) + value);
+            }
+            sum += value;
         }
 
+        List<Map.Entry<String, Double>> tupleList = new ArrayList<>(tupleMap.entrySet());
+
+        tupleList.sort((e1, e2) -> {
+            double leftValue = e1.getValue();
+            double rightValue = e2.getValue();
+            return Double.compare(rightValue, leftValue);
+        });
         // process the sorted rows, if the cumulative sum is greater than ratio * sum.
         // stop adding tuples, add new row called "Other" instead.
         double total = 0.0;
-        for (Tuple t: list) {
-            total += VisualizationOperator.extractNumber(t.getField(predicate.getDataColumn()));
-            result.add(t);
-            if (total / sum > predicate.getPruneRatio()) {
+        for (Map.Entry<String, Double> t: tupleList) {
+            total += t.getValue();
+            result.add(new Tuple(outputSchema, buildNameField(t.getKey()), buildDataField(t.getValue())));
 
-                IField nameField =  buildOtherNameField();
-                IField dataField =  buildOtherDataField(sum - total);
+            if (total / sum > predicate.getPruneRatio()) {
+                IField nameField =  buildNameField("Other");
+                IField dataField =  buildDataField(sum - total);
                 result.add(new Tuple(outputSchema, nameField, dataField));
                 return;
             }
@@ -128,18 +143,18 @@ public class PieChartSink extends VisualizationOperator {
 
 
     }
-    private IField buildOtherNameField() {
+    private IField buildNameField(String string) {
 
 
         Attribute nameColumn =   inputOperator.getOutputSchema().getAttribute(predicate.getNameColumn());
         AttributeType nameColumnType = nameColumn.getType();
         if (nameColumnType.equals(AttributeType.STRING)) {
-            return new StringField("Other");
+            return new StringField(string);
         }
-        return new TextField("Other");
+        return new TextField(string);
     }
 
-    private IField buildOtherDataField(double value) {
+    private IField buildDataField(double value) {
         Attribute dataColumn =   inputOperator.getOutputSchema().getAttribute(predicate.getDataColumn());
         AttributeType  dataColumnType = dataColumn.getType();
 

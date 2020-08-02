@@ -160,10 +160,8 @@ describe('ResultPanelComponent', () => {
 
     // This is a way to get the private method in Components. Since this edge case can
     //  never be reached in the public method, this architecture is required.
-
-    expect(() =>
-      (component as any).displayResultTable(mockExecutionEmptyResult.result)
-    ).toThrowError(new RegExp(`result data should not be empty`));
+    (component as any).displayResultTable(mockExecutionEmptyResult.result);
+    expect(component.showMessage).toEqual(false);
 
   });
 
