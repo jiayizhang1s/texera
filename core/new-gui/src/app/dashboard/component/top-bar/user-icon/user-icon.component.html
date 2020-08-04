@@ -1,6 +1,5 @@
 <div ngbDropdown class="d-inline-block user-icon">
-  <button  mat-raised-button color="accent" [routerLink]="['/']">Workspace</button>
-
+  <a href="/"><button  mat-raised-button color="accent" >Workspace</button></a>
   <button mat-raised-button color="accent" id="dropdownBasic1" ngbDropdownToggle>{{user?.userName || "Sign In"}}</button>
   <div ngbDropdownMenu aria-labelledby="dropdownBasic1" class="user-dropdown">
     <button *ngIf = "!user" class="dropdown-item" (click) = "onClickLogin()">Sign In</button>
