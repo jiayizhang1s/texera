@@ -25,6 +25,10 @@ const routes: Routes = [
     component : WorkspaceComponent
   },
   {
+    path : 'workflows/:id',
+    component : WorkspaceComponent
+  },
+  {
     path : 'dashboard',
     component : DashboardComponent,
     children : [

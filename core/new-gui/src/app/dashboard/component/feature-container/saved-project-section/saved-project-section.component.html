@@ -28,7 +28,7 @@
             </div>
             <div class = "scroll">
             <mat-list-item *ngFor="let project of projects" class= "project-list-item">
-              <h3 mat-line class="project-title"><a href={{this.defaultWeb}}>{{project.name}}</a></h3>
+              <h3 mat-line class="project-title"><a href="/workflows/{{project.name}}">{{project.name}}</a></h3>
               <p mat-line class="project-time" > <br>
                 Last Access: {{project.lastModifiedTime | date:'yyyy-MM-dd HH:mm'}}
                 <span class="time-space"></span>
