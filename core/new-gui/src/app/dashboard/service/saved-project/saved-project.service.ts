@@ -18,11 +18,28 @@ import { UserService } from '../../../common/service/user/user.service';
 export class SavedProjectService {
 
   public static WORKFLOWLIST_ENDPOINT = 'workflow/workflow-list';
-
+  public static ADD_NEW_WORKFLOW_ENDPOINT = 'workflow/add';
   constructor(private http: HttpClient,
     private userService: UserService) { }
 
+  public addNewProject(workflowID: string): Observable<Number> {
+    const user = this.userService.getUser();
+    if (user) {
+      const body = {username: user.userName,
+                    workflowID: workflowID,
+                    workflowBody: JSON.stringify({
+                      operators: [],
+                      operatorPositions: {},
+                      links: []
+                    })};
+      return this.http.post<Number>(
+        `${AppSettings.getApiEndpoint()}/${SavedProjectService.ADD_NEW_WORKFLOW_ENDPOINT}`,
+          JSON.stringify(body),
+          { headers: {'Content-Type' : 'application/json'}});
+    }
 
+    return Observable.of(-1);
+  }
   public getSavedProjectData(): Observable<SavedProject[]> {
       const user = this.userService.getUser();
       if (user) {

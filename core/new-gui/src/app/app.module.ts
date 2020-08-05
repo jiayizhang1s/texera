@@ -73,7 +73,7 @@ import { FormlyModule } from '@ngx-formly/core';
 import { FormlyMaterialModule } from '@ngx-formly/material';
 
 
-
+import { SavedProjectService } from './dashboard/service/saved-project/saved-project.service';
 import { UserService } from './common/service/user/user.service';
 import { NgbdModalUserLoginComponent } from './dashboard/component/top-bar/user-icon/user-login/ngbdmodal-user-login.component';
 import {
@@ -165,6 +165,7 @@ import { VisualizationPanelContentComponent } from './workspace/component/visual
     NgbdModalFileAddComponent
   ],
   providers: [
+    SavedProjectService,
     HttpClientModule,
     UserService,
     UserFileService,

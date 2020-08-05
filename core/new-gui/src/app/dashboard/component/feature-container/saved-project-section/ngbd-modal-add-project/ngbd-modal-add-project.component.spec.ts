@@ -5,9 +5,9 @@ import { NgbModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 
 import { HttpClientModule } from '@angular/common/http';
-
+import { SavedProjectService } from '../../../../service/saved-project/saved-project.service';
 import { NgbdModalAddProjectComponent } from './ngbd-modal-add-project.component';
-
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 describe('NgbdModalAddProjectComponent', () => {
   let component: NgbdModalAddProjectComponent;
   let fixture: ComponentFixture<NgbdModalAddProjectComponent>;
@@ -19,13 +19,15 @@ describe('NgbdModalAddProjectComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ NgbdModalAddProjectComponent ],
       providers: [
-        NgbActiveModal
+        NgbActiveModal,
+        SavedProjectService
       ],
       imports: [
         MatDialogModule,
         NgbModule,
         FormsModule,
-        HttpClientModule]
+        HttpClientModule,
+        HttpClientTestingModule]
     })
     .compileComponents();
   }));
@@ -48,9 +50,7 @@ describe('NgbdModalAddProjectComponent', () => {
     let getResult: String;
     getResult = '';
     addcomponent.name = 'test';
-    // addcomponent.newProject.subscribe((out: any) => getResult = out);
     addcomponent.addProject();
-
     expect(getResult).toEqual('');
   });
 });

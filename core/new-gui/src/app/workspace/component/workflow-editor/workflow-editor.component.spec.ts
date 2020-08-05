@@ -5,7 +5,7 @@ import { DragDropService } from './../../service/drag-drop/drag-drop.service';
 import { WorkflowUtilService } from './../../service/workflow-graph/util/workflow-util.service';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ValidationWorkflowService } from './../../service/validation/validation-workflow.service';
-
+import { HttpClient } from '@angular/common/http';
 import { WorkflowEditorComponent } from './workflow-editor.component';
 
 import { OperatorMetadataService } from '../../service/operator-metadata/operator-metadata.service';

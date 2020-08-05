@@ -61,6 +61,35 @@ public class UserWorkflowResource {
             this.name = name;
         }
     }
+
+    public static class UserWorkflowAddRequest {
+        public String username;
+        public String workflowID;
+        public String workflowBody;
+    }
+
+    @POST
+    @Path("/add")
+    public int addUserWorkflow(UserWorkflowAddRequest userWorkflowAddRequest, @Session HttpSession session) {
+
+        UserResource.User user = UserResource.getUser(session);
+        if (user == null) {
+            throw new TexeraWebException("No access");
+        }
+        System.out.println(userWorkflowAddRequest.username);
+        Record1<UInteger> userID = UserSqlServer.createDSLContext()
+            .select(USERACCOUNT.USERID)
+            .from(USERACCOUNT)
+            .where(USERACCOUNT.USERNAME.equal(userWorkflowAddRequest.username))
+            .fetchOne();
+        return UserSqlServer.createDSLContext()
+                            .insertInto(USERWORKFLOW)
+                            .set(USERWORKFLOW.USERID, userID.value1())
+                            .set(USERWORKFLOW.WORKFLOWID, userWorkflowAddRequest.workflowID)
+                            .set(USERWORKFLOW.NAME, userWorkflowAddRequest.workflowID)
+                            .set(USERWORKFLOW.WORKFLOWBODY, userWorkflowAddRequest.workflowBody)
+                            .execute();
+    }
     /**
      * This method handles the frontend's request to get all workflows of a specific user.
      *

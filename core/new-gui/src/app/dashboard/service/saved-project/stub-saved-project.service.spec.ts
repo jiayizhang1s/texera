@@ -18,7 +18,5 @@ describe('StubSavedProjectService', () => {
     });
   });
 
-  it('should be created', inject([StubSavedProjectService], (service: StubSavedProjectService) => {
-    expect(service).toBeTruthy();
-  }));
+
 });

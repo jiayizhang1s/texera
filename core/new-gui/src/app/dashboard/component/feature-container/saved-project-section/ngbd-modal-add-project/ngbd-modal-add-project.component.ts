@@ -1,6 +1,6 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-
+import { SavedProjectService } from '../../../../service/saved-project/saved-project.service';
 /**
  * NgbdModalAddProjectComponent is the pop-up component
  * to let user create new project. User needs to specify
@@ -16,8 +16,11 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 export class NgbdModalAddProjectComponent {
 
   public name: string = '';
-
-  constructor(public activeModal: NgbActiveModal) { }
+  public message: string | undefined;
+  constructor(
+    private workflowService: SavedProjectService,
+    public activeModal: NgbActiveModal
+          ) { }
 
   /**
   * addProject records the project information and return
@@ -25,11 +28,21 @@ export class NgbdModalAddProjectComponent {
   *
   * @param
   */
-  public addProject(): void {
+  public addProject() {
     if (this.name !== '') {
-      this.activeModal.close(this.name);
+      this.workflowService.addNewProject(this.name)
+          .subscribe(
+            res => {
+              if (res === 1) { // successfully login in
+                this.message = 'Add project successfully.';
+                this.activeModal.close(this.name);
+              } else { // login error
+                this.message = 'Add project failed.';
+              }
+            }
+      );
     } else {
-      $('#warning').text('Please input the project name!');
+      this.message = 'Project cannot be null.';
     }
   }
 }

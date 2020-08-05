@@ -186,7 +186,7 @@ export class SaveWorkflowService {
       this.workflowActionService.getTexeraGraph().getOperatorPropertyChangeStream(),
       this.workflowActionService.getTexeraGraph().getOperatorAdvancedOptionChangeSteam(),
       this.workflowActionService.getJointGraphWrapper().getOperatorPositionChangeEvent()
-    ).debounceTime(1000).subscribe(() => {
+    ).debounceTime(50).subscribe(() => {
       const workflow = this.workflowActionService.getTexeraGraph();
 
       const operators = workflow.getAllOperators();

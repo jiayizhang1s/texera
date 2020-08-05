@@ -92,7 +92,6 @@ export class WorkflowEditorComponent implements AfterViewInit {
     private jointUIService: JointUIService,
     private workflowStatusService: WorkflowStatusService,
     private workflowUtilService: WorkflowUtilService,
-    private saveWorkflowService: SaveWorkflowService
   ) {
 
     // bind validation functions to the same scope as component

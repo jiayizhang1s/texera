@@ -13,6 +13,7 @@
 
 
 </div>
+<p *ngIf="message">{{message}}</p>
 <div class="modal-footer">
   <button type="button" class="btn btn-outline-dark add-button" (click)="addProject()">Add</button>
   <button type="button" class="btn btn-outline-dark" (click)="activeModal.close()">Close</button>

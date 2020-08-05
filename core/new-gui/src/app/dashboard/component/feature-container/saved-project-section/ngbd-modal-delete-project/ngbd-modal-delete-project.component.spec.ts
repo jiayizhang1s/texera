@@ -6,7 +6,7 @@ import { NgbModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 
 import { HttpClientModule } from '@angular/common/http';
-
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NgbdModalDeleteProjectComponent } from './ngbd-modal-delete-project.component';
 
 describe('NgbdModalDeleteProjectComponent', () => {
@@ -33,7 +33,8 @@ describe('NgbdModalDeleteProjectComponent', () => {
         MatDialogModule,
         NgbModule,
         FormsModule,
-        HttpClientModule]
+        HttpClientModule,
+        HttpClientTestingModule]
     })
     .compileComponents();
   }));
