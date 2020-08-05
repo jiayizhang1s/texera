@@ -18,7 +18,8 @@ import { UserService } from '../../../common/service/user/user.service';
 export class SavedProjectService {
 
   public static WORKFLOWLIST_ENDPOINT = 'workflow/workflow-list';
-  public static ADD_NEW_WORKFLOW_ENDPOINT = 'workflow/add';
+  public static ADD_WORKFLOW_ENDPOINT = 'workflow/add';
+  public static DELETE_WORKFLOW_ENDPOINT = 'workflow/delete';
   constructor(private http: HttpClient,
     private userService: UserService) { }
 
@@ -33,12 +34,12 @@ export class SavedProjectService {
                       links: []
                     })};
       return this.http.post<Number>(
-        `${AppSettings.getApiEndpoint()}/${SavedProjectService.ADD_NEW_WORKFLOW_ENDPOINT}`,
+        `${AppSettings.getApiEndpoint()}/${SavedProjectService.ADD_WORKFLOW_ENDPOINT}`,
           JSON.stringify(body),
           { headers: {'Content-Type' : 'application/json'}});
     }
 
-    return Observable.of(-1);
+    return Observable.of(0);
   }
   public getSavedProjectData(): Observable<SavedProject[]> {
       const user = this.userService.getUser();
@@ -52,8 +53,26 @@ export class SavedProjectService {
       return Observable.of([]);
   }
 
-  public deleteSavedProjectData(deleteProject: SavedProject) {
-    return null;
+  public deleteSavedProjectData(workflowID: string): Number {
+
+    const user = this.userService.getUser();
+    if (user) {
+      console.log('delete ' + workflowID);
+      const body = {username: user.userName, workflowID: workflowID};
+      this.http.post<Number>(
+      `${AppSettings.getApiEndpoint()}/${SavedProjectService.DELETE_WORKFLOW_ENDPOINT}`,
+        JSON.stringify(body),
+        { headers: {'Content-Type' : 'application/json'}})
+        .subscribe(response => {
+          return response;
+          console.log('success' + response);
+        },
+        failed => {
+          return failed;
+        });
+     }
+
+     return 0;
 
   }
 }

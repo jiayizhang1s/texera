@@ -2,6 +2,7 @@ package edu.uci.ics.texera.web.resource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.api.Http;
 import edu.uci.ics.texera.dataflow.sqlServerInfo.UserSqlServer;
 import edu.uci.ics.texera.web.TexeraWebException;
 import edu.uci.ics.texera.web.response.GenericWebResponse;
@@ -68,6 +69,19 @@ public class UserWorkflowResource {
         public String workflowBody;
     }
 
+    public static class UserWorkflowDeleteRequest {
+        public String username;
+        public String workflowID;
+    }
+
+    /**
+     * This method handles the frontend's request to get all workflows of a specific user.
+     *
+     * @param UserWorkflowListRequest
+     * @param session
+     * @return integer 1 if adding is successful
+     *                 0 if adding is failed
+     */
     @POST
     @Path("/add")
     public int addUserWorkflow(UserWorkflowAddRequest userWorkflowAddRequest, @Session HttpSession session) {
@@ -76,7 +90,7 @@ public class UserWorkflowResource {
         if (user == null) {
             throw new TexeraWebException("No access");
         }
-        System.out.println(userWorkflowAddRequest.username);
+
         Record1<UInteger> userID = UserSqlServer.createDSLContext()
             .select(USERACCOUNT.USERID)
             .from(USERACCOUNT)
@@ -90,6 +104,26 @@ public class UserWorkflowResource {
                             .set(USERWORKFLOW.WORKFLOWBODY, userWorkflowAddRequest.workflowBody)
                             .execute();
     }
+
+    @POST
+    @Path("/delete")
+    public int deleteUserWorkflow(UserWorkflowDeleteRequest request, @Session HttpSession session) {
+        UserResource.User user = UserResource.getUser(session);
+        if (user == null) {
+            throw new TexeraWebException("No access");
+        }
+        Record1<UInteger> userID = UserSqlServer.createDSLContext()
+                .select(USERACCOUNT.USERID)
+                .from(USERACCOUNT)
+                .where(USERACCOUNT.USERNAME.equal(request.username))
+                .fetchOne();
+        return UserSqlServer.createDSLContext()
+                            .delete(USERWORKFLOW)
+                            .where(USERWORKFLOW.USERID.equal(userID.value1()))
+                            .and(USERWORKFLOW.WORKFLOWID.equal(request.workflowID))
+                            .execute();
+    }
+
     /**
      * This method handles the frontend's request to get all workflows of a specific user.
      *
@@ -97,6 +131,7 @@ public class UserWorkflowResource {
      * @param session
      * @return a json string representing an list of projects which records workflow id and name.
      */
+
     @POST
     @Path("/workflow-list")
     public List<UserWorkflowDescription> getUserWorkflowList(UserWorkflowListRequest request, @Session HttpSession session) {

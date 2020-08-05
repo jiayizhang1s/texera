@@ -108,7 +108,7 @@ export class SavedProjectSectionComponent implements OnInit {
       .subscribe((value: string) => {
         if (value) {
           const newProject: SavedProject = {
-            id: (this.projects.length + 1).toString(),
+            id: value,
             name: value,
             creationTime: Date.now().toString(),
             lastModifiedTime: Date.now().toString()
@@ -134,7 +134,8 @@ export class SavedProjectSectionComponent implements OnInit {
       (value: boolean) => {
         if (value) {
           this.projects = this.projects.filter(obj => obj.id !== project.id);
-          this.savedProjectService.deleteSavedProjectData(project);
+          console.log(project.id);
+          this.savedProjectService.deleteSavedProjectData(project.id);
         }
       }
     );
