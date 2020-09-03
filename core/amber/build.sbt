@@ -67,3 +67,7 @@ libraryDependencies += "com.google.guava" % "guava" % "29.0-jre"
 libraryDependencies += "org.tukaani" % "xz" % "1.5"
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.8" % Test
+
+// https://mvnrepository.com/artifact/mysql/mysql-connector-java
+libraryDependencies += "mysql" % "mysql-connector-java" % "8.0.19"
+
