@@ -40,12 +40,12 @@ export class VisualizationPanelContentComponent implements OnInit, AfterViewInit
     switch (this.data.chartType) {
       // correspond to WordCloudSink.java
       case ChartType.WORD_CLOUD: this.onClickGenerateWordCloud(); break;
-      // correspond to TexeraBarChart.java
+      // correspond to BarChartSink.java
       case ChartType.BAR:
       case ChartType.STACKED_BAR:
       // correspond to PieChartSink.java
       case ChartType.PIE:
-      case ChartType.DOUNT:
+      case ChartType.DONUT:
       // correspond to TexeraLineChart.java
       case ChartType.LINE:
       case ChartType.SPLINE: this.onClickGenerateChart(); break;
