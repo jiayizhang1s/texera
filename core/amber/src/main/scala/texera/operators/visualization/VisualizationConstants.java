@@ -5,4 +5,6 @@ public class VisualizationConstants {
 
     public static final String LINE = "line";
     public static final String SPLINE = "spline";
+
+    public static final String WORD_CLOUD = "word cloud";
 }
