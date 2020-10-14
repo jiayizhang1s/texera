@@ -1,9 +1,9 @@
 package Engine.Common.AmberMessage
 
-import Engine.Operators.OperatorMetadata
+import Engine.Operators.OpExecConfig
 import Engine.Architecture.Breakpoint.FaultedTuple
 import Engine.Architecture.Breakpoint.LocalBreakpoint.LocalBreakpoint
-import Engine.Common.AmberTuple.Tuple
+import Engine.Common.tuple.Tuple
 import akka.actor.ActorRef
 
 object ControlMessage {
@@ -12,7 +12,7 @@ object ControlMessage {
 
   final case class Pause()
 
-  final case class ModifyLogic(newMetadata: OperatorMetadata)
+  final case class ModifyLogic(newMetadata: OpExecConfig)
 
   final case class Resume()
 
