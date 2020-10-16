@@ -130,7 +130,7 @@ export class WorkflowEditorComponent implements AfterViewInit {
       this.handleOperatorStatisticsUpdate();
     }
 
-    this.handlePaperMouseZoom();
+    // this.handlePaperMouseZoom();
     this.handleOperatorSuggestionHighlightEvent();
     this.dragDropService.registerWorkflowEditorDrop(this.WORKFLOW_EDITOR_JOINTJS_ID);
 
